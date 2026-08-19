@@ -19,6 +19,26 @@
             font-size: 20px;
             margin-bottom: 20px;
             color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .status-bar {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #27ae60;
+        }
+        .status-dot.warning {
+            background: #f39c12;
         }
         .nav {
             display: flex;
@@ -54,6 +74,7 @@
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
+            flex-wrap: wrap;
         }
         .btn {
             padding: 8px 16px;
@@ -62,6 +83,9 @@
             cursor: pointer;
             font-size: 14px;
             font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
         .btn-primary {
             background: #2c3e50;
@@ -76,6 +100,20 @@
         }
         .btn-secondary:hover {
             background: #d5dbdb;
+        }
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #219a52;
+        }
+        .btn-export {
+            background: #3498db;
+            color: white;
+        }
+        .btn-export:hover {
+            background: #2980b9;
         }
         .grid {
             display: grid;
@@ -171,6 +209,91 @@
             border: 1px dashed #ddd;
             border-radius: 10px;
         }
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        .modal h3 {
+            margin-bottom: 16px;
+            color: #2c3e50;
+        }
+        .modal p {
+            margin-bottom: 16px;
+            color: #666;
+            font-size: 14px;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        .file-input {
+            display: none;
+        }
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex: 1;
+            overflow: hidden;
+        }
+        .breadcrumb-item {
+            color: #3498db;
+            cursor: pointer;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+        .breadcrumb-item:hover {
+            text-decoration: underline;
+        }
+        .breadcrumb-separator {
+            color: #ccc;
+            font-size: 12px;
+        }
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #2c3e50;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 2000;
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        .toast.success {
+            background: #27ae60;
+        }
+        .toast.error {
+            background: #e74c3c;
+        }
         @media (max-width: 600px) {
             .grid {
                 grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
@@ -186,26 +309,57 @@
             .card .icon {
                 font-size: 36px;
             }
+            .actions {
+                flex-direction: column;
+            }
+            .actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
     <h1>📁 Arsip Lembar Kerja</h1>
     
+    <div class="status-bar">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusText">Data tersimpan di browser ini saja</span>
+    </div>
+
     <div class="nav">
         <button onclick="goBack()" id="btnBack" style="display:none">← Kembali</button>
-        <span class="path" id="pathText">Beranda</span>
+        <div class="breadcrumb" id="breadcrumb"></div>
     </div>
 
     <div class="actions">
-        <button class="btn btn-secondary" onclick="newFolder()">+ Folder</button>
-        <button class="btn btn-primary" onclick="newLink()">+ Lembar Kerja</button>
+        <button class="btn btn-secondary" onclick="newFolder()">📁 + Folder</button>
+        <button class="btn btn-primary" onclick="newLink()">🔗 + Lembar Kerja</button>
+        <button class="btn btn-export" onclick="exportData()">💾 Export</button>
+        <button class="btn btn-success" onclick="document.getElementById('importFile').click()">📂 Import</button>
+        <input type="file" id="importFile" class="file-input" accept=".json" onchange="importData(event)">
     </div>
 
     <div class="grid" id="list"></div>
 
+    <!-- Modal Konfirmasi -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <h3 id="modalTitle">Konfirmasi</h3>
+            <p id="modalMessage">Apakah Anda yakin?</p>
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" onclick="closeModal()">Batal</button>
+                <button class="btn btn-primary" id="modalConfirm" onclick="confirmModal()">Ya</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
     <script>
-        let data = JSON.parse(localStorage.getItem('arsip_simple')) || {
+        // ===================== DATA DEFAULT =====================
+        const defaultData = {
             type: 'folder',
             name: 'Beranda',
             children: [
@@ -226,27 +380,111 @@
             ]
         };
 
+        // ===================== INISIALISASI =====================
+        let data = loadData();
         let currentPath = [data];
         let currentFolder = data;
 
-        function save() {
-            localStorage.setItem('arsip_simple', JSON.stringify(data));
+        // ===================== FUNGSI LOAD/SAVE =====================
+        function loadData() {
+            const saved = localStorage.getItem('arsip_simple');
+            if (saved) {
+                try {
+                    return JSON.parse(saved);
+                } catch (e) {
+                    console.error('Gagal parsing data tersimpan');
+                    return JSON.parse(JSON.stringify(defaultData));
+                }
+            }
+            return JSON.parse(JSON.stringify(defaultData));
         }
 
+        function saveData() {
+            localStorage.setItem('arsip_simple', JSON.stringify(data));
+            updateStatus();
+            showToast('Data disimpan!', 'success');
+        }
+
+        function updateStatus() {
+            const saved = localStorage.getItem('arsip_simple');
+            const dot = document.getElementById('statusDot');
+            const text = document.getElementById('statusText');
+            
+            if (saved) {
+                const dataSize = new Blob([saved]).size;
+                let sizeText = '';
+                if (dataSize < 1024) {
+                    sizeText = `(${dataSize} B)`;
+                } else {
+                    sizeText = `(${Math.round(dataSize/1024)} KB)`;
+                }
+                text.textContent = `Data tersimpan di browser ini ${sizeText}`;
+                dot.classList.remove('warning');
+            } else {
+                text.textContent = 'Belum ada data tersimpan';
+                dot.classList.add('warning');
+            }
+        }
+
+        // ===================== TOAST NOTIFICATION =====================
+        function showToast(message, type = '') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast show ' + type;
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        // ===================== MODAL =====================
+        let modalCallback = null;
+
+        function showModal(title, message, onConfirm) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalMessage').textContent = message;
+            document.getElementById('modalOverlay').classList.add('active');
+            modalCallback = onConfirm;
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+            modalCallback = null;
+        }
+
+        function confirmModal() {
+            if (modalCallback) modalCallback();
+            closeModal();
+        }
+
+        // ===================== RENDER =====================
         function render() {
             const list = document.getElementById('list');
-            const pathText = document.getElementById('pathText');
             const btnBack = document.getElementById('btnBack');
+            const breadcrumb = document.getElementById('breadcrumb');
 
-            pathText.textContent = currentPath.map(f => f.name).join(' / ');
+            // Render Breadcrumb
+            breadcrumb.innerHTML = currentPath.map((folder, index) => {
+                const isLast = index === currentPath.length - 1;
+                return `
+                    <span class="breadcrumb-item ${isLast ? '' : ''}" 
+                          onclick="${isLast ? '' : `navigateTo(${index})`}"
+                          style="color: ${isLast ? '#666' : '#3498db'}; cursor: ${isLast ? 'default' : 'pointer'}">
+                        ${escapeHTML(folder.name)}
+                    </span>
+                    ${isLast ? '' : '<span class="breadcrumb-separator">/</span>'}
+                `;
+            }).join('');
+
             btnBack.style.display = currentPath.length > 1 ? 'block' : 'none';
 
+            // Tampilkan isi folder
             if (currentFolder.children.length === 0) {
-                list.innerHTML = '<div class="empty">Folder kosong</div>';
+                list.innerHTML = '<div class="empty">📂 Folder kosong<br><small>Klik "+ Folder" atau "+ Lembar Kerja" untuk menambahkan</small></div>';
                 return;
             }
 
-            // Urutkan Folder dulu, baru Link/File
+            // Urutkan: Folder dulu, lalu Link
             const items = [...currentFolder.children]
                 .map((item, index) => ({ item, index }))
                 .sort((a, b) => {
@@ -255,45 +493,40 @@
                 });
 
             list.innerHTML = items.map(({ item, index }) => {
-                if (item.type === 'folder') {
-                    return `
-                        <div class="card">
-                            <div class="icon" onclick="openFolder(${index})" title="Buka folder">📁</div>
-                            <div class="name" onclick="openFolder(${index})" title="${escapeHTML(item.name)}">${escapeHTML(item.name)}</div>
-                            <div class="meta">${item.children.length} item</div>
-                            <div class="actions-item">
-                                <button class="btn-icon" onclick="editFolder(${index})">Edit</button>
-                                <button class="btn-icon" onclick="moveItem(${index})">Pindah</button>
-                                <button class="btn-icon danger" onclick="deleteItem(${index})">Hapus</button>
-                            </div>
+                const icon = item.type === 'folder' ? '📁' : '🔗';
+                const meta = item.type === 'folder' 
+                    ? `${item.children.length} item` 
+                    : escapeHTML(hostOf(item.url));
+                
+                const onclick = item.type === 'folder' 
+                    ? `openFolder(${index})` 
+                    : `window.open('${escapeAttr(item.url)}', '_blank')`;
+
+                return `
+                    <div class="card">
+                        <div class="icon" onclick="${onclick}" title="${escapeHTML(item.name)}">${icon}</div>
+                        <div class="name" onclick="${onclick}" title="${escapeHTML(item.name)}">${escapeHTML(item.name)}</div>
+                        <div class="meta">${meta}</div>
+                        <div class="actions-item">
+                            <button class="btn-icon" onclick="editItem(${index})">Edit</button>
+                            <button class="btn-icon" onclick="moveItem(${index})">Pindah</button>
+                            <button class="btn-icon danger" onclick="deleteItem(${index})">Hapus</button>
                         </div>
-                    `;
-                } else {
-                    return `
-                        <div class="card">
-                            <div class="icon" onclick="window.open('${escapeAttr(item.url)}', '_blank')" title="Buka link">📄</div>
-                            <div class="name" onclick="window.open('${escapeAttr(item.url)}', '_blank')" title="${escapeHTML(item.name)}">${escapeHTML(item.name)}</div>
-                            <div class="meta">${escapeHTML(hostOf(item.url))}</div>
-                            <div class="actions-item">
-                                <button class="btn-icon" onclick="editLink(${index})">Edit</button>
-                                <button class="btn-icon" onclick="moveItem(${index})">Pindah</button>
-                                <button class="btn-icon danger" onclick="deleteItem(${index})">Hapus</button>
-                            </div>
-                        </div>
-                    `;
-                }
+                    </div>
+                `;
             }).join('');
         }
 
-        // Mengubah nama dari 'escape' ke 'escapeHTML' agar tidak bentrok dengan fungsi bawaan JS
+        // ===================== UTILITY =====================
         function escapeHTML(text) {
+            if (!text) return '';
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
 
         function escapeAttr(text) {
-            return String(text)
+            return String(text || '')
                 .replace(/&/g, '&amp;')
                 .replace(/"/g, '&quot;')
                 .replace(/'/g, '&#39;')
@@ -305,13 +538,22 @@
             try {
                 return new URL(url).hostname.replace(/^www\./, '');
             } catch (e) {
-                return String(url).replace(/^https?:\/\//, '').split('/')[0];
+                return String(url || '').replace(/^https?:\/\//, '').split('/')[0];
             }
         }
 
+        // ===================== NAVIGASI =====================
         function goBack() {
             if (currentPath.length > 1) {
                 currentPath.pop();
+                currentFolder = currentPath[currentPath.length - 1];
+                render();
+            }
+        }
+
+        function navigateTo(index) {
+            if (index < currentPath.length - 1) {
+                currentPath = currentPath.slice(0, index + 1);
                 currentFolder = currentPath[currentPath.length - 1];
                 render();
             }
@@ -323,9 +565,13 @@
                 currentPath.push(folder);
                 currentFolder = folder;
                 render();
+                
+                // Scroll ke atas
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
 
+        // ===================== CRUD - TAMBAH =====================
         function newFolder() {
             const name = prompt('Nama folder baru:');
             if (name && name.trim()) {
@@ -334,7 +580,7 @@
                     name: name.trim(),
                     children: []
                 });
-                save();
+                saveData();
                 render();
             }
         }
@@ -342,6 +588,7 @@
         function newLink() {
             const name = prompt('Nama lembar kerja:');
             if (!name || !name.trim()) return;
+            
             const url = prompt('Alamat URL:', 'https://');
             if (!url || !url.trim()) return;
 
@@ -350,56 +597,63 @@
                 name: name.trim(),
                 url: url.trim()
             });
-            save();
+            saveData();
             render();
         }
 
-        function editFolder(index) {
+        // ===================== CRUD - EDIT =====================
+        function editItem(index) {
             const item = currentFolder.children[index];
-            const newName = prompt('Nama folder:', item.name);
-            if (newName && newName.trim()) {
+            
+            if (item.type === 'folder') {
+                const newName = prompt('Edit nama folder:', item.name);
+                if (newName && newName.trim()) {
+                    item.name = newName.trim();
+                    saveData();
+                    render();
+                }
+            } else {
+                const newName = prompt('Edit nama lembar kerja:', item.name);
+                if (!newName || !newName.trim()) return;
+                
+                const newUrl = prompt('Edit URL:', item.url);
+                if (!newUrl || !newUrl.trim()) return;
+
                 item.name = newName.trim();
-                save();
+                item.url = newUrl.trim();
+                saveData();
                 render();
             }
         }
 
-        function editLink(index) {
-            const item = currentFolder.children[index];
-            const newName = prompt('Nama lembar kerja:', item.name);
-            if (!newName || !newName.trim()) return;
-            const newUrl = prompt('Alamat URL:', item.url);
-            if (!newUrl || !newUrl.trim()) return;
-
-            item.name = newName.trim();
-            item.url = newUrl.trim();
-            save();
-            render();
-        }
-
+        // ===================== CRUD - HAPUS =====================
         function deleteItem(index) {
             const item = currentFolder.children[index];
-            if (confirm(`Hapus "${item.name}"?`)) {
-                currentFolder.children.splice(index, 1);
-                save();
-                render();
-            }
+            showModal(
+                '🗑️ Hapus Item',
+                `Apakah Anda yakin ingin menghapus "${item.name}"?${item.type === 'folder' ? '\n\n⚠️ Semua isi folder juga akan dihapus.' : ''}`,
+                () => {
+                    currentFolder.children.splice(index, 1);
+                    saveData();
+                    render();
+                }
+            );
         }
 
+        // ===================== CRUD - PINDAH =====================
         function moveItem(index) {
             const item = currentFolder.children[index];
             const folders = [];
 
             function scan(folder, path, depth) {
-                // Jangan masukkan folder itu sendiri atau subfolder di dalamnya jika yang dipindahkan adalah folder tersebut
+                // Jangan masukkan folder yang dipindahkan (jika folder) atau turunannya
                 if (item.type === 'folder' && isDescendant(item, folder)) return;
-
-                // Jangan masukkan folder asal sebagai pilihan tujuan pindah
+                
+                // Jangan masukkan folder asal
                 if (folder !== currentFolder) {
                     folders.push({ folder, name: path, depth });
                 }
 
-                // Tetap pindai semua subfolder di bawahnya
                 folder.children.filter(c => c.type === 'folder').forEach(f => {
                     scan(f, path + ' / ' + f.name, depth + 1);
                 });
@@ -408,20 +662,25 @@
             scan(data, data.name, 0);
 
             if (folders.length === 0) {
-                alert('Tidak ada folder tujuan lain');
+                showToast('Tidak ada folder tujuan lain', 'error');
                 return;
             }
 
             const options = folders.map((f, i) => `${i + 1}. ${'  '.repeat(f.depth)}${f.folder.name}`).join('\n');
-            const choice = prompt(`Pindahkan "${item.name}" ke:\n\n${options}\n\nMasukkan nomor:`);
+            
+            const choice = prompt(`Pindahkan "${item.name}" ke:\n\n${options}\n\nMasukkan nomor (0 = batal):`);
 
             if (choice) {
-                const num = parseInt(choice, 10) - 1;
-                if (num >= 0 && num < folders.length) {
+                const num = parseInt(choice, 10);
+                if (num === 0) return;
+                
+                const targetIndex = num - 1;
+                if (targetIndex >= 0 && targetIndex < folders.length) {
                     currentFolder.children.splice(index, 1);
-                    folders[num].folder.children.push(item);
-                    save();
+                    folders[targetIndex].folder.children.push(item);
+                    saveData();
                     render();
+                    showToast(`Dipindahkan ke "${folders[targetIndex].folder.name}"`, 'success');
                 }
             }
         }
@@ -435,6 +694,65 @@
             return false;
         }
 
+        // ===================== EXPORT / IMPORT =====================
+        function exportData() {
+            const jsonStr = JSON.stringify(data, null, 2);
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `arsip-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast('Berhasil di-export!', 'success');
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    
+                    // Validasi struktur data
+                    if (!imported.type || !imported.name || !Array.isArray(imported.children)) {
+                        throw new Error('Format data tidak valid');
+                    }
+
+                    showModal(
+                        '📂 Import Data',
+                        `Akan mengimpor data dari file "${file.name}".\n\nData saat ini akan digantikan. Lanjutkan?`,
+                        () => {
+                            data = imported;
+                            saveData();
+                            
+                            // Reset navigasi ke folder utama
+                            currentPath = [data];
+                            currentFolder = data;
+                            render();
+                            
+                            showToast('Berhasil di-import!', 'success');
+                        }
+                    );
+                } catch (err) {
+                    showToast('Gagal import: Format file tidak valid', 'error');
+                    console.error(err);
+                }
+            };
+            reader.readAsText(file);
+            
+            // Reset input file
+            event.target.value = '';
+        }
+
+        // ===================== INISIALISASI AWAL =====================
+        updateStatus();
         render();
     </script>
 </body>
