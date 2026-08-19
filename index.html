@@ -3,44 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arsip Lembar Kerja Online</title>
+    <title>Arsip Lembar Kerja</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #fafafa;
-            color: #333;
-            max-width: 900px;
+            background: #f5f6fa;
+            color: #2d3436;
+            max-width: 920px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 24px 16px;
             line-height: 1.5;
         }
-        h1 {
-            font-size: 20px;
-            margin-bottom: 20px;
-            color: #2c3e50;
+        .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
-        .status {
-            font-size: 12px;
-            font-weight: normal;
-            padding: 4px 10px;
+        h1 { font-size: 20px; color: #2c3e50; }
+        .badge {
+            font-size: 11px;
+            padding: 4px 12px;
             border-radius: 20px;
-            background: #e0e0e0;
-            color: #555;
-            display: none;
+            font-weight: 600;
+            letter-spacing: 0.3px;
         }
+        .badge-online { background: #d4efdf; color: #27ae60; }
+        .badge-saving { background: #fef9e7; color: #f39c12; }
+        .badge-error { background: #fdedec; color: #e74c3c; }
         .nav {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 8px;
+            margin-bottom: 16px;
             padding: 10px 14px;
             background: #fff;
-            border-radius: 8px;
-            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            border: 1px solid #e8e8e8;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
         }
         .nav button {
             background: none;
@@ -49,330 +52,523 @@
             cursor: pointer;
             font-size: 14px;
             padding: 5px 10px;
-            border-radius: 4px;
+            border-radius: 6px;
+            font-weight: 500;
         }
-        .nav button:hover { background: #f0f0f0; }
+        .nav button:hover { background: #f0f0f0; color: #2c3e50; }
         .nav .path {
             flex: 1;
             font-size: 14px;
-            color: #666;
+            color: #555;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            font-weight: 500;
         }
-        .actions {
+        .toolbar {
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
+            flex-wrap: wrap;
         }
         .btn {
-            padding: 8px 16px;
+            padding: 9px 18px;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.15s;
         }
-        .btn-primary { background: #2c3e50; color: white; }
-        .btn-primary:hover { background: #34495e; }
-        .btn-secondary { background: #ecf0f1; color: #2c3e50; }
-        .btn-secondary:hover { background: #d5dbdb; }
+        .btn-primary { background: #2c3e50; color: #fff; }
+        .btn-primary:hover { background: #34495e; transform: translateY(-1px); }
+        .btn-secondary { background: #fff; color: #2c3e50; border: 1px solid #ddd; }
+        .btn-secondary:hover { background: #f8f9fa; border-color: #bbb; }
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 14px;
         }
         .card {
             background: #fff;
-            border: 1px solid #e0e0e0;
-            border-radius: 10px;
-            padding: 18px 12px 14px;
+            border: 1px solid #e8e8e8;
+            border-radius: 12px;
+            padding: 20px 12px 14px;
             text-align: center;
             position: relative;
             transition: all 0.15s;
-            min-height: 140px;
+            min-height: 150px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
-        .card:hover { border-color: #c8c8c8; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
-        .card .icon { font-size: 42px; line-height: 1; margin-bottom: 10px; cursor: pointer; user-select: none; }
-        .card .name { font-weight: 500; font-size: 13px; color: #2c3e50; cursor: pointer; word-break: break-word; line-height: 1.35; max-width: 100%; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .card:hover {
+            border-color: #bdc3c7;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.07);
+            transform: translateY(-2px);
+        }
+        .card .icon {
+            font-size: 44px;
+            line-height: 1;
+            margin-bottom: 10px;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.15s;
+        }
+        .card:hover .icon { transform: scale(1.1); }
+        .card .name {
+            font-weight: 600;
+            font-size: 13px;
+            color: #2c3e50;
+            cursor: pointer;
+            word-break: break-word;
+            line-height: 1.35;
+            max-width: 100%;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
         .card .name:hover { color: #3498db; }
-        .card .meta { font-size: 11px; color: #999; margin-top: 4px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .card .actions-item { display: flex; gap: 4px; justify-content: center; margin-top: auto; padding-top: 10px; opacity: 0; transition: opacity 0.15s; width: 100%; }
-        .card:hover .actions-item { opacity: 1; }
-        .btn-icon { background: #f4f4f4; border: none; cursor: pointer; padding: 4px 8px; font-size: 11px; color: #666; border-radius: 4px; }
+        .card .meta {
+            font-size: 11px;
+            color: #999;
+            margin-top: 5px;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .card .card-actions {
+            display: flex;
+            gap: 4px;
+            justify-content: center;
+            margin-top: auto;
+            padding-top: 10px;
+            opacity: 0;
+            transition: opacity 0.15s;
+            width: 100%;
+        }
+        .card:hover .card-actions { opacity: 1; }
+        .btn-icon {
+            background: #f4f4f4;
+            border: none;
+            cursor: pointer;
+            padding: 4px 8px;
+            font-size: 11px;
+            color: #666;
+            border-radius: 5px;
+            font-weight: 500;
+        }
         .btn-icon:hover { background: #e8e8e8; color: #333; }
         .btn-icon.danger:hover { background: #fdecea; color: #e74c3c; }
-        .empty { grid-column: 1 / -1; text-align: center; padding: 50px 20px; color: #999; font-size: 14px; background: #fff; border: 1px dashed #ddd; border-radius: 10px; }
-        
-        #loader {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.8); display: flex;
-            justify-content: center; align-items: center;
-            z-index: 9999; font-size: 18px; font-weight: bold; color: #2c3e50;
+        .empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: #aaa;
+            font-size: 14px;
+            background: #fff;
+            border: 2px dashed #e0e0e0;
+            border-radius: 12px;
         }
-        
+        .empty .empty-icon { font-size: 48px; margin-bottom: 12px; }
+        #overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255,255,255,0.92);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            gap: 12px;
+            transition: opacity 0.3s;
+        }
+        #overlay.hidden { opacity: 0; pointer-events: none; }
+        .spinner {
+            width: 36px;
+            height: 36px;
+            border: 3px solid #e0e0e0;
+            border-top-color: #2c3e50;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #2c3e50;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            z-index: 10000;
+            transform: translateY(80px);
+            opacity: 0;
+            transition: all 0.3s;
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.success { background: #27ae60; }
+        .toast.error { background: #e74c3c; }
         @media (max-width: 600px) {
             .grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
-            .card .actions-item { opacity: 1; }
-            .card { min-height: 130px; padding: 14px 10px 12px; }
+            .card .card-actions { opacity: 1; }
+            .card { min-height: 135px; padding: 14px 10px 12px; }
             .card .icon { font-size: 36px; }
+            body { padding: 16px 10px; }
         }
     </style>
 </head>
 <body>
-    <div id="loader">Menghubungkan ke Cloud...</div>
 
-    <h1>
-        📁 Arsip Lembar Kerja 
-        <span id="status" class="status">Menyimpan...</span>
-    </h1>
-    
+    <div id="overlay">
+        <div class="spinner"></div>
+        <span style="font-size:14px;color:#555;font-weight:500;">Memuat data dari cloud...</span>
+    </div>
+
+    <div class="header">
+        <h1>📁 Arsip Lembar Kerja</h1>
+        <span id="statusBadge" class="badge badge-online">● Online</span>
+    </div>
+
     <div class="nav">
         <button onclick="goBack()" id="btnBack" style="display:none">← Kembali</button>
         <span class="path" id="pathText">Beranda</span>
     </div>
 
-    <div class="actions">
-        <button class="btn btn-secondary" onclick="newFolder()">+ Folder</button>
-        <button class="btn btn-primary" onclick="newLink()">+ Lembar Kerja</button>
+    <div class="toolbar">
+        <button class="btn btn-secondary" onclick="newFolder()">📂 + Folder</button>
+        <button class="btn btn-primary" onclick="newLink()">📄 + Lembar Kerja</button>
     </div>
 
     <div class="grid" id="list"></div>
 
-    <script>
-        // ==========================================
-        // PENGATURAN DATABASE ONLINE (JSONBIN.IO)
-        // ==========================================
-        const API_KEY = "$2a$10$aQNI6oE29k28vMyVPxOP4u4OdqLpAV20MdzNKR4WdkGBuIgxem.sa"; 
-        const BIN_ID = "6a852125f5f4af5e2926f117"; // <-- Ganti dengan ID Bin Anda
-        const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+    <div class="toast" id="toast"></div>
 
+    <script>
+        // ============================================================
+        //  KONFIGURASI DATABASE
+        // ============================================================
+        const API_KEY = "$2a$10$aQNI6oE29k28vMyVPxOP4u4OdqLpAV20MdzNKR4WdkGBuIgxem.sa";
+        const BIN_ID  = "6a852125f5f4af5e2926f117";
+        const API_URL = "https://api.jsonbin.io/v3/b/" + BIN_ID;
+
+        // ============================================================
+        //  STATE
+        // ============================================================
         let data = null;
         let currentPath = [];
         let currentFolder = null;
+        let saveTimer = null;
 
-        function createId() {
-            return 'id-' + Date.now() + '-' + Math.random().toString(16).slice(2);
+        // ============================================================
+        //  UTILS
+        // ============================================================
+        function uid() {
+            return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
         }
 
-        function showStatus(text, isLoader = false) {
-            if (isLoader) {
-                document.getElementById('loader').style.display = 'flex';
-                document.getElementById('loader').textContent = text;
-            } else {
-                const status = document.getElementById('status');
-                status.textContent = text;
-                status.style.display = 'block';
-                status.style.background = '#f1c40f';
-            }
+        function esc(t) {
+            const d = document.createElement("div");
+            d.textContent = String(t);
+            return d.innerHTML;
         }
 
-        function hideStatus(isLoader = false, successText = '') {
-            if (isLoader) {
-                document.getElementById('loader').style.display = 'none';
-            } else {
-                const status = document.getElementById('status');
-                status.textContent = successText || 'Tersimpan';
-                status.style.background = '#2ecc71';
-                status.style.color = '#fff';
-                setTimeout(() => status.style.display = 'none', 2000);
-            }
+        function escA(t) {
+            return String(t)
+                .replace(/&/g, "&amp;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#39;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
         }
 
-        async function loadDataOnline() {
-            if (BIN_ID === "MASUKKAN_BIN_ID_ANDA_DISINI") {
-                alert("Harap masukkan BIN_ID Anda terlebih dahulu di dalam script!");
-                return { id: "root", type: "folder", name: "Beranda", children: [] };
-            }
+        function hostOf(url) {
+            try { return new URL(url).hostname.replace(/^www\./, ""); }
+            catch { return "link"; }
+        }
 
+        function normalizeUrl(u) {
+            u = String(u || "").trim();
+            if (!u) return null;
+            if (!/^https?:\/\//i.test(u)) u = "https://" + u;
             try {
-                showStatus('Mengambil data online...', true);
-                const response = await fetch(API_URL, {
-                    method: 'GET',
-                    headers: { 'X-Master-Key': API_KEY }
-                });
-                const result = await response.json();
-                hideStatus(true);
-                return result.record;
-            } catch (error) {
-                console.error("Gagal load:", error);
-                alert("Gagal mengambil data dari server. Periksa koneksi internet atau BIN_ID Anda.");
-                hideStatus(true);
-                return { id: "root", type: "folder", name: "Beranda", children: [] };
-            }
+                const p = new URL(u);
+                if (p.protocol !== "http:" && p.protocol !== "https:") return null;
+                return p.href;
+            } catch { return null; }
         }
 
-        async function saveOnline() {
+        function showToast(msg, type = "success") {
+            const el = document.getElementById("toast");
+            el.textContent = msg;
+            el.className = "toast show " + type;
+            setTimeout(() => el.classList.remove("show"), 2500);
+        }
+
+        function setBadge(text, cls) {
+            const b = document.getElementById("statusBadge");
+            b.textContent = text;
+            b.className = "badge " + cls;
+        }
+
+        // ============================================================
+        //  CLOUD LOAD / SAVE
+        // ============================================================
+        async function loadFromCloud() {
+            if (BIN_ID === "GANTI_DENGAN_BIN_ID_ANDA") {
+                throw new Error("BIN_ID belum diisi. Silakan ganti di bagian KONFIGURASI.");
+            }
+            const res = await fetch(API_URL, {
+                headers: { "X-Master-Key": API_KEY }
+            });
+            if (!res.ok) throw new Error("HTTP " + res.status);
+            const json = await res.json();
+            return json.record;
+        }
+
+        async function saveToCloud() {
+            if (BIN_ID === "GANTI_DENGAN_BIN_ID_ANDA") return;
             try {
-                showStatus('Menyimpan ke Cloud...');
-                await fetch(API_URL, {
-                    method: 'PUT',
+                setBadge("⏳ Menyimpan...", "badge-saving");
+                const res = await fetch(API_URL, {
+                    method: "PUT",
                     headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': API_KEY
+                        "Content-Type": "application/json",
+                        "X-Master-Key": API_KEY
                     },
                     body: JSON.stringify(data)
                 });
-                hideStatus(false, 'Tersimpan Online');
-            } catch (error) {
-                console.error("Gagal save:", error);
-                alert("Gagal menyimpan ke server! Periksa koneksi internet Anda.");
-                hideStatus(false, 'Gagal Menyimpan');
+                if (!res.ok) throw new Error("HTTP " + res.status);
+                setBadge("● Online", "badge-online");
+                showToast("Tersimpan di cloud ✓");
+            } catch (e) {
+                console.error("Save error:", e);
+                setBadge("✕ Error", "badge-error");
+                showToast("Gagal menyimpan!", "error");
             }
         }
 
-        async function init() {
-            data = await loadDataOnline();
-            
-            const folderIdFromUrl = location.hash.replace('#', '');
-            const initialPath = folderIdFromUrl ? findPathById(data, folderIdFromUrl) : null;
-
-            if (initialPath) {
-                setCurrentFolder(initialPath, false);
-            } else {
-                setCurrentFolder([data], true);
-            }
+        function scheduleSave() {
+            clearTimeout(saveTimer);
+            saveTimer = setTimeout(saveToCloud, 600);
         }
 
+        // ============================================================
+        //  TREE HELPERS
+        // ============================================================
         function findPathById(folder, id, path = []) {
-            const newPath = [...path, folder];
-            if (folder.id === id) return newPath;
-            for (const child of folder.children || []) {
-                if (child.type === 'folder') {
-                    const result = findPathById(child, id, newPath);
-                    if (result) return result;
+            const p = [...path, folder];
+            if (folder.id === id) return p;
+            for (const c of folder.children || []) {
+                if (c.type === "folder") {
+                    const r = findPathById(c, id, p);
+                    if (r) return r;
                 }
             }
             return null;
         }
 
+        function isDescendant(parent, child) {
+            if (parent === child) return true;
+            if (parent.type !== "folder") return false;
+            return (parent.children || []).some(
+                c => c.type === "folder" && isDescendant(c, child)
+            );
+        }
+
+        // ============================================================
+        //  NAVIGATION
+        // ============================================================
         function setCurrentFolder(path, updateUrl = true) {
             currentPath = path;
             currentFolder = path[path.length - 1];
-            if (updateUrl) history.replaceState(null, '', '#' + currentFolder.id);
+            if (updateUrl) history.replaceState(null, "", "#" + currentFolder.id);
             render();
         }
 
-        function render() {
-            const list = document.getElementById('list');
-            const pathText = document.getElementById('pathText');
-            const btnBack = document.getElementById('btnBack');
-
-            pathText.textContent = currentPath.map(folder => folder.name).join(' / ');
-            btnBack.style.display = currentPath.length > 1 ? 'block' : 'none';
-
-            if (!currentFolder.children || currentFolder.children.length === 0) {
-                list.innerHTML = '<div class="empty">Folder kosong</div>';
-                return;
-            }
-
-            const items = currentFolder.children
-                .map((item, index) => ({ item, index }))
-                .sort((a, b) => a.item.type === b.item.type ? 0 : (a.item.type === 'folder' ? -1 : 1));
-
-            list.innerHTML = items.map(({ item, index }) => {
-                const itemName = escapeHTML(item.name);
-                if (item.type === 'folder') {
-                    return `
-                        <div class="card">
-                            <div class="icon" onclick="openFolder(${index})">📁</div>
-                            <div class="name" onclick="openFolder(${index})">${itemName}</div>
-                            <div class="meta">${item.children ? item.children.length : 0} item</div>
-                            <div class="actions-item">
-                                <button class="btn-icon" onclick="editFolder(${index})">Edit</button>
-                                <button class="btn-icon danger" onclick="deleteItem(${index})">Hapus</button>
-                            </div>
-                        </div>`;
-                } else {
-                    return `
-                        <div class="card">
-                            <div class="icon" onclick="window.open('${escapeAttr(item.url)}', '_blank')">📄</div>
-                            <div class="name" onclick="window.open('${escapeAttr(item.url)}', '_blank')">${itemName}</div>
-                            <div class="meta">${escapeHTML(hostOf(item.url))}</div>
-                            <div class="actions-item">
-                                <button class="btn-icon" onclick="editLink(${index})">Edit</button>
-                                <button class="btn-icon danger" onclick="deleteItem(${index})">Hapus</button>
-                            </div>
-                        </div>`;
-                }
-            }).join('');
-        }
-
         function openFolder(index) {
-            const folder = currentFolder.children[index];
-            if (folder.type === 'folder') setCurrentFolder([...currentPath, folder]);
+            const f = currentFolder.children[index];
+            if (f && f.type === "folder") setCurrentFolder([...currentPath, f]);
         }
 
         function goBack() {
             if (currentPath.length > 1) setCurrentFolder(currentPath.slice(0, -1));
         }
 
+        // ============================================================
+        //  CRUD
+        // ============================================================
         function newFolder() {
-            const name = prompt('Nama folder baru:');
-            if (name && name.trim()) {
-                currentFolder.children.push({ id: createId(), type: 'folder', name: name.trim(), children: [] });
-                render();
-                saveOnline();
-            }
+            const name = prompt("Nama folder baru:");
+            if (!name || !name.trim()) return;
+            currentFolder.children.push({
+                id: uid(), type: "folder", name: name.trim(), children: []
+            });
+            render();
+            scheduleSave();
         }
 
         function newLink() {
-            const name = prompt('Nama lembar kerja:');
+            const name = prompt("Nama lembar kerja:");
             if (!name || !name.trim()) return;
-            let url = prompt('Alamat URL:', 'https://');
-            if (!url || !url.trim()) return;
-            if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
-
-            currentFolder.children.push({ id: createId(), type: 'link', name: name.trim(), url: url });
+            const raw = prompt("Alamat URL:", "https://");
+            if (!raw || !raw.trim()) return;
+            const url = normalizeUrl(raw);
+            if (!url) { alert("URL tidak valid."); return; }
+            currentFolder.children.push({
+                id: uid(), type: "link", name: name.trim(), url
+            });
             render();
-            saveOnline();
+            scheduleSave();
         }
 
         function editFolder(index) {
             const item = currentFolder.children[index];
-            const newName = prompt('Nama folder:', item.name);
-            if (newName && newName.trim()) {
-                item.name = newName.trim();
+            const n = prompt("Nama folder:", item.name);
+            if (n && n.trim()) {
+                item.name = n.trim();
                 render();
-                saveOnline();
+                scheduleSave();
             }
         }
 
         function editLink(index) {
             const item = currentFolder.children[index];
-            const newName = prompt('Nama lembar kerja:', item.name);
-            if (!newName || !newName.trim()) return;
-            let url = prompt('Alamat URL:', item.url);
-            if (!url || !url.trim()) return;
-            if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
-
-            item.name = newName.trim();
+            const n = prompt("Nama lembar kerja:", item.name);
+            if (!n || !n.trim()) return;
+            const raw = prompt("Alamat URL:", item.url);
+            if (!raw || !raw.trim()) return;
+            const url = normalizeUrl(raw);
+            if (!url) { alert("URL tidak valid."); return; }
+            item.name = n.trim();
             item.url = url;
             render();
-            saveOnline();
+            scheduleSave();
         }
 
         function deleteItem(index) {
             const item = currentFolder.children[index];
-            if (confirm(`Hapus "${item.name}"?`)) {
-                currentFolder.children.splice(index, 1);
-                render();
-                saveOnline();
-            }
+            if (!confirm('Hapus "' + item.name + '"?')) return;
+            currentFolder.children.splice(index, 1);
+            render();
+            scheduleSave();
         }
 
-        function escapeHTML(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
-        function escapeAttr(text) { return String(text).replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
-        function hostOf(url) { try { return new URL(url).hostname.replace(/^www\./, ''); } catch (e) { return "Link"; } }
+        function moveItem(index) {
+            const item = currentFolder.children[index];
+            const targets = [];
 
-        window.addEventListener('hashchange', function () {
-            const folderId = location.hash.replace('#', '');
-            if (!folderId) return setCurrentFolder([data], false);
-            const path = findPathById(data, folderId);
-            if (path) setCurrentFolder(path, false);
+            (function scan(folder, path, depth) {
+                if (item.type === "folder" && isDescendant(item, folder)) return;
+                if (folder !== currentFolder) targets.push({ folder, path, depth });
+                (folder.children || [])
+                    .filter(c => c.type === "folder")
+                    .forEach(c => scan(c, path + " / " + c.name, depth + 1));
+            })(data, data.name, 0);
+
+            if (!targets.length) { alert("Tidak ada folder tujuan."); return; }
+
+            const opts = targets
+                .map((t, i) => (i + 1) + ". " + "  ".repeat(t.depth) + t.path)
+                .join("\n");
+            const ch = prompt('Pindahkan "' + item.name + '" ke:\n\n' + opts + "\n\nMasukkan nomor:");
+            if (!ch) return;
+            const idx = parseInt(ch, 10) - 1;
+            if (idx < 0 || idx >= targets.length) { alert("Nomor tidak valid."); return; }
+
+            currentFolder.children.splice(index, 1);
+            targets[idx].folder.children.push(item);
+            render();
+            scheduleSave();
+        }
+
+        // ============================================================
+        //  RENDER
+        // ============================================================
+        function render() {
+            const list = document.getElementById("list");
+            document.getElementById("pathText").textContent =
+                currentPath.map(f => f.name).join(" / ");
+            document.getElementById("btnBack").style.display =
+                currentPath.length > 1 ? "block" : "none";
+
+            const kids = currentFolder.children || [];
+            if (!kids.length) {
+                list.innerHTML =
+                    '<div class="empty"><div class="empty-icon">📂</div>Folder kosong.<br>Klik tombol di atas untuk menambah.</div>';
+                return;
+            }
+
+            const sorted = kids
+                .map((item, i) => ({ item, i }))
+                .sort((a, b) =>
+                    a.item.type === b.item.type ? 0 : a.item.type === "folder" ? -1 : 1
+                );
+
+            list.innerHTML = sorted.map(({ item, i }) => {
+                const nm = esc(item.name);
+                if (item.type === "folder") {
+                    const cnt = (item.children || []).length;
+                    return '<div class="card">' +
+                        '<div class="icon" onclick="openFolder(' + i + ')">📁</div>' +
+                        '<div class="name" onclick="openFolder(' + i + ')" title="' + escA(item.name) + '">' + nm + '</div>' +
+                        '<div class="meta">' + cnt + " item</div>" +
+                        '<div class="card-actions">' +
+                        '<button class="btn-icon" onclick="editFolder(' + i + ')">✏️</button>' +
+                        '<button class="btn-icon" onclick="moveItem(' + i + ')">📦</button>' +
+                        '<button class="btn-icon danger" onclick="deleteItem(' + i + ')">🗑️</button>' +
+                        '</div></div>';
+                }
+                const url = escA(item.url);
+                return '<div class="card">' +
+                    '<div class="icon" onclick="window.open(\'' + url + '\',\'_blank\',\'noopener\')">📄</div>' +
+                    '<div class="name" onclick="window.open(\'' + url + '\',\'_blank\',\'noopener\')" title="' + escA(item.name) + '">' + nm + '</div>' +
+                    '<div class="meta">' + esc(hostOf(item.url)) + '</div>' +
+                    '<div class="card-actions">' +
+                    '<button class="btn-icon" onclick="editLink(' + i + ')">✏️</button>' +
+                    '<button class="btn-icon" onclick="moveItem(' + i + ')">📦</button>' +
+                    '<button class="btn-icon danger" onclick="deleteItem(' + i + ')">🗑️</button>' +
+                    '</div></div>';
+            }).join("");
+        }
+
+        // ============================================================
+        //  INIT
+        // ============================================================
+        async function init() {
+            try {
+                data = await loadFromCloud();
+                if (!data || !data.id) {
+                    data = { id: "root", type: "folder", name: "Beranda", children: [] };
+                }
+            } catch (e) {
+                console.error(e);
+                document.getElementById("overlay").innerHTML =
+                    '<div style="text-align:center;max-width:320px;padding:20px;">' +
+                    '<div style="font-size:40px;margin-bottom:12px;">⚠️</div>' +
+                    '<strong>Gagal memuat data</strong><br><br>' +
+                    '<span style="font-size:13px;color:#888;">' + esc(e.message) + '</span><br><br>' +
+                    '<button class="btn btn-primary" onclick="location.reload()">Coba Lagi</button>' +
+                    '</div>';
+                return;
+            }
+
+            const hashId = location.hash.replace("#", "");
+            const path = hashId ? findPathById(data, hashId) : null;
+            setCurrentFolder(path || [data], !path);
+
+            document.getElementById("overlay").classList.add("hidden");
+        }
+
+        window.addEventListener("hashchange", () => {
+            const id = location.hash.replace("#", "");
+            if (!id) return setCurrentFolder([data], false);
+            const p = findPathById(data, id);
+            if (p) setCurrentFolder(p, false);
         });
 
         init();
