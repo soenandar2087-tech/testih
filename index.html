@@ -1,12 +1,3 @@
-Ada beberapa kemungkinan mengapa HTML ini tidak bisa di-commit di GitHub. Penyebab paling sering adalah:
-
-1. **Konflik Nama Fungsi (`escape`):** Di dalam kode Anda, terdapat fungsi bernama `escape()`. Di dalam JavaScript, `escape` adalah fungsi bawaan (*deprecated global function*). GitHub (terutama jika Anda menggunakan GitHub Actions atau linter otomatis) sering kali memblokir atau menolak commit yang menimpa (*shadowing*) fungsi global bawaan karena dianggap buruk secara keamanan/sintaks.
-2. **Karakter Tersembunyi (Invisible Characters):** Kadang saat menyalin kode, ada karakter tak terlihat (*zero-width space*) yang ikut tersalin dan ditolak oleh GitHub.
-3. **Bug pada Fitur Pindah Folder (`moveItem`):** Ada kesalahan logika kecil di fungsi pemindahan folder yang membuat proses scan berhenti jika berada di folder utama.
-
-Berikut adalah kode yang sudah diperbaiki, dibersihkan, dan dioptimalkan agar **pasti bisa di-commit di GitHub**:
-
-```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -448,15 +439,3 @@ Berikut adalah kode yang sudah diperbaiki, dibersihkan, dan dioptimalkan agar **
     </script>
 </body>
 </html>
-```
-
-### Apa saja yang diperbaiki?
-1. **Mengubah `escape` menjadi `escapeHTML`:** Menghindari konflik dengan fungsi bawaan web browser (`window.escape`) yang biasanya diblokir oleh sistem otomatis GitHub.
-2. **Memperbaiki Logika `moveItem`:** Pada kode lama Anda, jika Anda berada di folder "Beranda", Anda tidak bisa memindahkan file apa pun karena fungsi pemindaian langsung berhenti (`return`). Sekarang Anda bisa memindahkan file antar folder dengan lancar.
-3. **Format Bersih (UTF-8):** Menghapus karakter-karakter tak terlihat yang berpotensi merusak proses penyimpanan file di repositori GitHub.
-
-### Cara Mengatasi Jika Masih Gagal Commit di Web GitHub:
-Jika Anda mengedit langsung lewat web GitHub (mengklik ikon pensil) lalu gagal melakukan commit:
-1. Pastikan koneksi internet Anda stabil.
-2. Coba gunakan **Incognito Window** (Mode Penyamaran) di browser Anda untuk menghindari ekstensi browser (seperti AdBlocker) memblokir request API GitHub.
-3. Jika masih gagal, unduh aplikasi **GitHub Desktop** atau gunakan Git Bash/Terminal untuk melakukan push dari komputer lokal Anda.
