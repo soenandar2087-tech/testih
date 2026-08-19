@@ -33,6 +33,7 @@
         .b-ok { background: #d4efdf; color: #196f3d; }
         .b-wait { background: #fef9e7; color: #b7950b; }
         .b-err { background: #fdedec; color: #c0392b; }
+        .b-local { background: #eaf2f8; color: #2471a3; }
         .nav {
             display: flex;
             align-items: center;
@@ -94,8 +95,16 @@
             align-items: center;
             transition: all .15s;
         }
-        .card:hover { box-shadow: 0 6px 20px rgba(0,0,0,.07); transform: translateY(-2px); }
-        .icon { font-size: 42px; cursor: pointer; margin-bottom: 8px; user-select: none; }
+        .card:hover {
+            box-shadow: 0 6px 20px rgba(0,0,0,.07);
+            transform: translateY(-2px);
+        }
+        .icon {
+            font-size: 42px;
+            cursor: pointer;
+            margin-bottom: 8px;
+            user-select: none;
+        }
         .name {
             font-weight: 700;
             font-size: 13px;
@@ -121,74 +130,116 @@
         }
         .card:hover .ca { opacity: 1; }
         .bi {
-            background: #f4f4f4; border: none; border-radius: 5px;
-            padding: 4px 8px; cursor: pointer; font-size: 11px;
-            color: #666; font-weight: 500;
+            background: #f4f4f4;
+            border: none;
+            border-radius: 5px;
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 11px;
+            color: #666;
+            font-weight: 500;
         }
         .bi:hover { background: #e8e8e8; }
         .bi.dg:hover { background: #fdecea; color: #e74c3c; }
         .empty {
-            grid-column: 1 / -1; text-align: center; padding: 50px 16px;
-            color: #aaa; background: #fff; border: 2px dashed #e0e0e0; border-radius: 12px;
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 50px 16px;
+            color: #aaa;
+            background: #fff;
+            border: 2px dashed #e0e0e0;
+            border-radius: 12px;
         }
         .empty .ei { font-size: 48px; margin-bottom: 10px; }
         #ov {
-            position: fixed; inset: 0; background: rgba(255,255,255,.93);
-            display: flex; flex-direction: column; justify-content: center;
-            align-items: center; z-index: 90; gap: 12px; transition: opacity .3s;
+            position: fixed;
+            inset: 0;
+            background: rgba(255,255,255,.93);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 90;
+            gap: 12px;
+            transition: opacity .3s;
         }
         #ov.hide { opacity: 0; pointer-events: none; }
         .sp {
-            width: 34px; height: 34px; border: 3px solid #ddd;
-            border-top-color: #2c3e50; border-radius: 50%;
+            width: 34px; height: 34px;
+            border: 3px solid #ddd;
+            border-top-color: #2c3e50;
+            border-radius: 50%;
             animation: spin .8s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
         .toast {
-            position: fixed; bottom: 20px; right: 20px;
-            padding: 12px 20px; border-radius: 8px; font-size: 13px;
-            font-weight: 600; z-index: 120; transform: translateY(80px);
-            opacity: 0; transition: all .3s; color: #fff;
+            position: fixed;
+            bottom: 20px; right: 20px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 120;
+            transform: translateY(80px);
+            opacity: 0;
+            transition: all .3s;
+            color: #fff;
+            max-width: 85vw;
         }
         .toast.show { transform: translateY(0); opacity: 1; }
         .toast.ok { background: #27ae60; }
         .toast.er { background: #e74c3c; }
+        .toast.wn { background: #f39c12; }
 
         /* ===== MODAL ===== */
         #modalBg {
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4);
-            z-index: 200; align-items: center; justify-content: center; padding: 16px;
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.45);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
         }
         #modalBg.show { display: flex; }
         .modal {
-            background: #fff; border-radius: 14px; width: 100%; max-width: 400px;
-            padding: 22px 22px 18px; box-shadow: 0 16px 48px rgba(0,0,0,.18);
+            background: #fff;
+            border-radius: 14px;
+            width: 100%;
+            max-width: 420px;
+            padding: 22px 22px 18px;
+            box-shadow: 0 16px 48px rgba(0,0,0,.18);
             animation: pop .18s ease;
+            max-height: 90vh;
+            overflow-y: auto;
         }
         @keyframes pop { from { transform: scale(.94); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         .modal h3 { font-size: 16px; color: #2c3e50; margin-bottom: 16px; }
-        .modal label {
-            display: block; font-size: 12px; font-weight: 600; color: #666;
-            margin-bottom: 5px; margin-top: 10px;
-        }
+        .modal label { display: block; font-size: 12px; font-weight: 600; color: #666; margin-bottom: 5px; margin-top: 12px; }
         .modal label:first-of-type { margin-top: 0; }
-        .modal input, .modal select {
-            width: 100%; padding: 10px 12px; border: 1.5px solid #ddd;
-            border-radius: 8px; font-size: 14px; outline: none; font-family: inherit;
+        .modal input, .modal select, .modal textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1.5px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            font-family: inherit;
+            background: #fff;
         }
-        .modal input:focus, .modal select:focus { border-color: #2c3e50; }
+        .modal input:focus, .modal textarea:focus { border-color: #2c3e50; }
+        .modal textarea { resize: vertical; min-height: 60px; }
         .modal .msg { font-size: 14px; color: #444; margin-bottom: 8px; line-height: 1.5; }
         .modal .actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
-        .modal .actions button {
-            padding: 8px 18px; border: none; border-radius: 8px;
-            font-size: 13px; font-weight: 700; cursor: pointer;
-        }
+        .modal .actions button { padding: 8px 18px; border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; }
         .m-ok { background: #2c3e50; color: #fff; }
         .m-ok:hover { background: #34495e; }
         .m-cancel { background: #f0f0f0; color: #555; }
         .m-cancel:hover { background: #e4e4e4; }
         .m-danger { background: #e74c3c; color: #fff; }
         .m-danger:hover { background: #c0392b; }
+        .modal .hint { font-size: 11px; color: #999; margin-top: 4px; }
 
         @media (max-width: 600px) {
             .grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
@@ -223,20 +274,26 @@
 
 <div class="grid" id="list"></div>
 <div class="toast" id="toast"></div>
-
 <div id="modalBg"></div>
 
 <script>
+/* ================================================================
+   KONFIGURASI
+   ================================================================ */
 var MASTER_KEY = "$2a$10$BCdyrhALUzXee8NI.yNV6.glef2ECbzFPRSrM62oIiC/mg/z3Z0H2";
 var BIN_ID     = "6a852125f5f4af5e2926f117";
 var API_URL    = "https://api.jsonbin.io/v3/b/" + BIN_ID;
-var LKEY       = "arsip_cloud_v3";
+var LKEY       = "arsip_cloud_v4";
 
 var data = { id: "root", type: "folder", name: "Beranda", children: [] };
 var cPath = [data];
 var cFolder = data;
 var sTimer = null;
+var isSaving = false;
 
+/* ================================================================
+   UTIL
+   ================================================================ */
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
 
 function esc(t) {
@@ -267,14 +324,16 @@ function badge(txt, cls) {
     e.className = "badge " + cls;
 }
 
-function toast(msg, ok) {
+function toast(msg, type) {
     var e = document.getElementById("toast");
     e.textContent = msg;
-    e.className = "toast show " + (ok ? "ok" : "er");
-    setTimeout(function () { e.className = "toast"; }, 2500);
+    e.className = "toast show " + (type || "ok");
+    setTimeout(function () { e.className = "toast"; }, 3000);
 }
 
-/* ===== MODAL ===== */
+/* ================================================================
+   MODAL KUSTOM
+   ================================================================ */
 function closeModal() {
     document.getElementById("modalBg").className = "";
     document.getElementById("modalBg").innerHTML = "";
@@ -284,46 +343,45 @@ function openModal(html) {
     var bg = document.getElementById("modalBg");
     bg.innerHTML = html;
     bg.className = "show";
-    var first = bg.querySelector("input, select");
-    if (first) setTimeout(function () { first.focus(); first.select && first.select(); }, 50);
+    var first = bg.querySelector("input, textarea, select");
+    if (first) setTimeout(function () { first.focus(); }, 50);
 }
 
 function ask(title, fields, okText) {
     return new Promise(function (resolve) {
         var inputs = fields.map(function (f, i) {
+            var extra = f.hint ? '<div class="hint">' + esc(f.hint) + '</div>' : '';
             if (f.type === "select") {
                 var opts = f.options.map(function (o) {
-                    return '<option value="' + esc(o.value) + '">' + esc(o.label) + "</option>";
+                    return '<option value="' + esc(o.value) + '">' + esc(o.label) + '</option>';
                 }).join("");
-                return '<label>' + esc(f.label) + '</label><select id="mf' + i + '">' + opts + "</select>";
+                return '<label>' + esc(f.label) + '</label><select id="mf' + i + '">' + opts + '</select>' + extra;
             }
-            return '<label>' + esc(f.label) + '</label><input id="mf' + i + '" type="text" value="' + esc(f.value || "") + '" placeholder="' + esc(f.placeholder || "") + '">';
+            if (f.type === "textarea") {
+                return '<label>' + esc(f.label) + '</label><textarea id="mf' + i + '" rows="3" placeholder="' + esc(f.placeholder || "") + '">' + esc(f.value || "") + '</textarea>' + extra;
+            }
+            return '<label>' + esc(f.label) + '</label><input id="mf' + i + '" type="text" value="' + esc(f.value || "") + '" placeholder="' + esc(f.placeholder || "") + '">' + extra;
         }).join("");
 
         openModal(
-            '<div class="modal">' +
-            "<h3>" + esc(title) + "</h3>" +
-            inputs +
+            '<div class="modal"><h3>' + esc(title) + '</h3>' + inputs +
             '<div class="actions">' +
             '<button class="m-cancel" id="mCancel">Batal</button>' +
-            '<button class="m-ok" id="mOk">' + esc(okText || "Simpan") + "</button>" +
-            "</div></div>"
+            '<button class="m-ok" id="mOk">' + esc(okText || "Simpan") + '</button>' +
+            '</div></div>'
         );
 
         function finish(val) { closeModal(); resolve(val); }
-
         document.getElementById("mCancel").onclick = function () { finish(null); };
-        document.getElementById("modalBg").onclick = function (e) {
-            if (e.target.id === "modalBg") finish(null);
-        };
         document.getElementById("mOk").onclick = function () {
             var vals = fields.map(function (_, i) {
                 return document.getElementById("mf" + i).value;
             });
             finish(vals);
         };
+        document.getElementById("modalBg").onclick = function (e) { if (e.target.id === "modalBg") finish(null); };
         document.getElementById("modalBg").onkeydown = function (e) {
-            if (e.key === "Enter") document.getElementById("mOk").click();
+            if (e.key === "Enter" && e.target.tagName !== "TEXTAREA") document.getElementById("mOk").click();
             if (e.key === "Escape") finish(null);
         };
     });
@@ -332,47 +390,38 @@ function ask(title, fields, okText) {
 function confirmBox(title, message) {
     return new Promise(function (resolve) {
         openModal(
-            '<div class="modal">' +
-            "<h3>" + esc(title) + "</h3>" +
-            '<div class="msg">' + esc(message) + "</div>" +
+            '<div class="modal"><h3>' + esc(title) + '</h3>' +
+            '<div class="msg">' + esc(message) + '</div>' +
             '<div class="actions">' +
             '<button class="m-cancel" id="mCancel">Batal</button>' +
             '<button class="m-danger" id="mOk">Hapus</button>' +
-            "</div></div>"
+            '</div></div>'
         );
         function finish(val) { closeModal(); resolve(val); }
         document.getElementById("mCancel").onclick = function () { finish(false); };
         document.getElementById("mOk").onclick = function () { finish(true); };
-        document.getElementById("modalBg").onclick = function (e) {
-            if (e.target.id === "modalBg") finish(false);
-        };
-        document.getElementById("modalBg").onkeydown = function (e) {
-            if (e.key === "Escape") finish(false);
-        };
+        document.getElementById("modalBg").onclick = function (e) { if (e.target.id === "modalBg") finish(false); };
+        document.getElementById("modalBg").onkeydown = function (e) { if (e.key === "Escape") finish(false); };
     });
 }
 
 function alertBox(title, message) {
     return new Promise(function (resolve) {
         openModal(
-            '<div class="modal">' +
-            "<h3>" + esc(title) + "</h3>" +
-            '<div class="msg">' + esc(message) + "</div>" +
-            '<div class="actions"><button class="m-ok" id="mOk">OK</button></div>' +
-            "</div>"
+            '<div class="modal"><h3>' + esc(title) + '</h3>' +
+            '<div class="msg">' + esc(message) + '</div>' +
+            '<div class="actions"><button class="m-ok" id="mOk">OK</button></div></div>'
         );
         function finish() { closeModal(); resolve(); }
         document.getElementById("mOk").onclick = finish;
-        document.getElementById("modalBg").onclick = function (e) {
-            if (e.target.id === "modalBg") finish();
-        };
-        document.getElementById("modalBg").onkeydown = function (e) {
-            if (e.key === "Enter" || e.key === "Escape") finish();
-        };
+        document.getElementById("modalBg").onclick = function (e) { if (e.target.id === "modalBg") finish(); };
+        document.getElementById("modalBg").onkeydown = function (e) { if (e.key === "Enter" || e.key === "Escape") finish(); };
     });
 }
 
-/* ===== LOGIKA CLOUD ===== */
+/* ================================================================
+   NORMALIZE TREE
+   ================================================================ */
 function normTree(item) {
     if (!item || typeof item !== "object") return null;
     var n = {
@@ -388,57 +437,90 @@ function normTree(item) {
     return n;
 }
 
-function saveLocal() {
-    try { localStorage.setItem(LKEY, JSON.stringify(data)); } catch (e) {}
-}
+/* ================================================================
+   LOCAL BACKUP
+   ================================================================ */
+function saveLocal() { try { localStorage.setItem(LKEY, JSON.stringify(data)); } catch (e) {} }
 
 function loadLocal() {
-    try {
-        var r = localStorage.getItem(LKEY);
-        return r ? normTree(JSON.parse(r)) : null;
-    } catch (e) { return null; }
+    try { var r = localStorage.getItem(LKEY); return r ? normTree(JSON.parse(r)) : null; }
+    catch (e) { return null; }
+}
+
+/* ================================================================
+   CLOUD API + RETRY
+   ================================================================ */
+async function fetchCloud(method, body) {
+    var opts = {
+        method: method,
+        headers: {
+            "Content-Type": "application/json",
+            "X-Master-Key": MASTER_KEY,
+            "X-Bin-Versioning": "false"
+        }
+    };
+    if (body) opts.body = JSON.stringify(body);
+
+    var res = await fetch(API_URL + (method === "GET" ? "/latest" : ""), opts);
+    if (!res.ok) {
+        var t = await res.text().catch(function () { return ""; });
+        throw new Error("HTTP " + res.status + " " + t.substring(0, 200));
+    }
+    return await res.json();
 }
 
 async function cloudGet() {
-    var res = await fetch(API_URL + "/latest", {
-        method: "GET",
-        headers: { "X-Master-Key": MASTER_KEY }
-    });
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    var json = await res.json();
+    var json = await fetchCloud("GET");
     return normTree(json.record || json);
 }
 
 async function cloudSave() {
-    /* Menghapus header yang berpotensi ditolak oleh JSONBin Free */
-    var res = await fetch(API_URL, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-            "X-Master-Key": MASTER_KEY
-        },
-        body: JSON.stringify(data)
-    });
-    if (!res.ok) throw new Error("HTTP " + res.status);
+    await fetchCloud("PUT", data);
+}
+
+async function cloudSaveWithRetry(attempts) {
+    attempts = attempts || 3;
+    for (var i = 0; i < attempts; i++) {
+        try {
+            await cloudSave();
+            return true;
+        } catch (e) {
+            console.warn("Save attempt " + (i + 1) + " failed:", e.message);
+            if (i < attempts - 1) {
+                await new Promise(function (ok) { setTimeout(ok, 1000 * (i + 1)); });
+            }
+        }
+    }
+    return false;
 }
 
 function doSave() {
     saveLocal();
     clearTimeout(sTimer);
     sTimer = setTimeout(async function () {
+        if (isSaving) return;
+        isSaving = true;
         try {
             badge("⏳ Menyimpan...", "b-wait");
-            await cloudSave();
-            badge("● Online", "b-ok");
-            toast("Tersimpan di cloud ✓", true);
+            var ok = await cloudSaveWithRetry(3);
+            if (ok) {
+                badge("● Online", "b-ok");
+                toast("Tersimpan di cloud ✓", "ok");
+            } else {
+                badge("⚠ Cadangan", "b-err");
+                toast("Cloud gagal, data tersimpan di browser.", "wn");
+            }
         } catch (e) {
-            badge("⚠ Gagal", "b-err");
-            toast("Gagal sinkron cloud!", false);
+            badge("⚠ Cadangan", "b-err");
+            toast("Cloud gagal, data tersimpan di browser.", "wn");
         }
-    }, 500);
+        isSaving = false;
+    }, 800);
 }
 
-/* ===== NAVIGASI ===== */
+/* ================================================================
+   NAVIGASI
+   ================================================================ */
 function findPath(folder, id, path) {
     var p = (path || []).concat(folder);
     if (folder.id === id) return p;
@@ -474,18 +556,13 @@ function openFolder(i) {
     if (f && f.type === "folder") setFolder(cPath.concat(f));
 }
 
-function openLink(i) {
-    var it = cFolder.children[i];
-    if (it && it.url) {
-        window.open(it.url, '_blank', 'noopener,noreferrer');
-    }
-}
-
 function goBack() {
     if (cPath.length > 1) setFolder(cPath.slice(0, -1));
 }
 
-/* ===== CRUD ===== */
+/* ================================================================
+   CRUD
+   ================================================================ */
 async function newFolder() {
     var r = await ask("Folder baru", [
         { label: "Nama folder", placeholder: "Contoh: Administrasi" }
@@ -498,20 +575,21 @@ async function newFolder() {
 async function newLink() {
     var r = await ask("Lembar kerja baru", [
         { label: "Nama lembar kerja", placeholder: "Contoh: Laporan Januari" },
-        { label: "Alamat URL", value: "https://", placeholder: "https://..." }
+        { label: "Alamat URL", value: "https://", placeholder: "https://drive.google.com/...", hint: "Tempel URL Google Drive, Docs, Sheets, dll." }
     ], "Simpan");
     if (!r || !r[0].trim()) return;
     var u = normUrl(r[1]);
-    if (!u) { await alertBox("URL tidak valid", "Masukkan alamat yang benar, misalnya https://docs.google.com"); return; }
+    if (!u) {
+        await alertBox("URL tidak valid", "Masukkan alamat URL yang benar, misalnya:\nhttps://drive.google.com/file/d/xxxxx/view");
+        return;
+    }
     cFolder.children.push({ id: uid(), type: "link", name: r[0].trim(), url: u });
     render(); doSave();
 }
 
 async function editFolder(i) {
     var it = cFolder.children[i];
-    var r = await ask("Ubah folder", [
-        { label: "Nama folder", value: it.name }
-    ], "Simpan");
+    var r = await ask("Ubah folder", [{ label: "Nama folder", value: it.name }], "Simpan");
     if (!r || !r[0].trim()) return;
     it.name = r[0].trim();
     render(); doSave();
@@ -521,11 +599,14 @@ async function editLink(i) {
     var it = cFolder.children[i];
     var r = await ask("Ubah lembar kerja", [
         { label: "Nama lembar kerja", value: it.name },
-        { label: "Alamat URL", value: it.url }
+        { label: "Alamat URL", value: it.url, hint: "Bisa Google Drive, Docs, Sheets, dll." }
     ], "Simpan");
     if (!r || !r[0].trim()) return;
     var u = normUrl(r[1]);
-    if (!u) { await alertBox("URL tidak valid", "Masukkan alamat yang benar."); return; }
+    if (!u) {
+        await alertBox("URL tidak valid", "Masukkan alamat URL yang benar.");
+        return;
+    }
     it.name = r[0].trim();
     it.url = u;
     render(); doSave();
@@ -556,15 +637,11 @@ async function moveItem(i) {
         return;
     }
 
-    var r = await ask("Pindahkan item", [
-        {
-            label: 'Pindahkan "' + it.name + '" ke folder:',
-            type: "select",
-            options: targets.map(function (t, idx) {
-                return { value: String(idx), label: t.p };
-            })
-        }
-    ], "Pindah");
+    var r = await ask("Pindahkan item", [{
+        label: 'Pindahkan "' + it.name + '" ke folder:',
+        type: "select",
+        options: targets.map(function (t, idx) { return { value: String(idx), label: t.p }; })
+    }], "Pindah");
     if (!r) return;
     var sel = parseInt(r[0], 10);
     if (isNaN(sel) || sel < 0 || sel >= targets.length) return;
@@ -574,7 +651,9 @@ async function moveItem(i) {
     render(); doSave();
 }
 
-/* ===== RENDER ===== */
+/* ================================================================
+   RENDER + EVENT DELEGATION (aman untuk URL panjang/Google Drive)
+   ================================================================ */
 function render() {
     document.getElementById("pt").textContent = cPath.map(function (f) { return f.name; }).join(" / ");
     document.getElementById("bb").style.display = cPath.length > 1 ? "block" : "none";
@@ -597,29 +676,64 @@ function render() {
         if (it.type === "folder") {
             var cnt = (it.children || []).length;
             return '<div class="card">'
-                + '<div class="icon" onclick="openFolder(' + i + ')">📁</div>'
-                + '<div class="name" onclick="openFolder(' + i + ')" title="' + esc(it.name) + '">' + esc(it.name) + "</div>"
-                + '<div class="meta">' + cnt + " item</div>"
+                + '<div class="icon" data-act="open" data-i="' + i + '">📁</div>'
+                + '<div class="name" data-act="open" data-i="' + i + '">' + esc(it.name) + '</div>'
+                + '<div class="meta">' + cnt + ' item</div>'
                 + '<div class="ca">'
-                + '<button class="bi" onclick="editFolder(' + i + ')">✏️ Edit</button>'
-                + '<button class="bi" onclick="moveItem(' + i + ')">📦 Pindah</button>'
-                + '<button class="bi dg" onclick="delItem(' + i + ')">🗑️ Hapus</button>'
-                + "</div></div>";
+                + '<button class="bi" data-act="edit-f" data-i="' + i + '">✏️ Edit</button>'
+                + '<button class="bi" data-act="move" data-i="' + i + '">📦 Pindah</button>'
+                + '<button class="bi dg" data-act="del" data-i="' + i + '">🗑️ Hapus</button>'
+                + '</div></div>';
         }
-        
         return '<div class="card">'
-            + '<div class="icon" onclick="openLink(' + i + ')">📄</div>'
-            + '<div class="name" onclick="openLink(' + i + ')" title="' + esc(it.name) + '">' + esc(it.name) + "</div>"
-            + '<div class="meta">' + esc(hostOf(it.url)) + "</div>"
+            + '<div class="icon" data-act="open-link" data-i="' + i + '">📄</div>'
+            + '<div class="name" data-act="open-link" data-i="' + i + '">' + esc(it.name) + '</div>'
+            + '<div class="meta">' + esc(hostOf(it.url)) + '</div>'
             + '<div class="ca">'
-            + '<button class="bi" onclick="editLink(' + i + ')">✏️ Edit</button>'
-            + '<button class="bi" onclick="moveItem(' + i + ')">📦 Pindah</button>'
-            + '<button class="bi dg" onclick="delItem(' + i + ')">🗑️ Hapus</button>'
-            + "</div></div>";
+            + '<button class="bi" data-act="edit-l" data-i="' + i + '">✏️ Edit</button>'
+            + '<button class="bi" data-act="move" data-i="' + i + '">📦 Pindah</button>'
+            + '<button class="bi dg" data-act="del" data-i="' + i + '">🗑️ Hapus</button>'
+            + '</div></div>';
     }).join("");
 }
 
-/* ===== INIT ===== */
+/* Event delegation — tidak ada inline onclick */
+document.getElementById("list").addEventListener("click", function (e) {
+    var el = e.target.closest("[data-act]");
+    if (!el) return;
+    var act = el.getAttribute("data-act");
+    var i = parseInt(el.getAttribute("data-i"), 10);
+
+    switch (act) {
+        case "open":
+            openFolder(i);
+            break;
+        case "open-link":
+            var url = cFolder.children[i] && cFolder.children[i].url;
+            if (url) {
+                window.open(url, "_blank", "noopener");
+            } else {
+                alertBox("Gagal", "URL tidak ditemukan.");
+            }
+            break;
+        case "edit-f":
+            editFolder(i);
+            break;
+        case "edit-l":
+            editLink(i);
+            break;
+        case "move":
+            moveItem(i);
+            break;
+        case "del":
+            delItem(i);
+            break;
+    }
+});
+
+/* ================================================================
+   INIT
+   ================================================================ */
 async function init() {
     try {
         var d = await cloudGet();
@@ -627,10 +741,11 @@ async function init() {
         badge("● Online", "b-ok");
         saveLocal();
     } catch (e) {
+        console.error("Cloud load error:", e);
         var local = loadLocal();
         data = local || data;
         badge("⚠ Cadangan", "b-err");
-        toast("Koneksi gagal, memakai cadangan lokal.", false);
+        toast("Gagal koneksi cloud. Menggunakan cadangan lokal.", "wn");
     }
 
     var hid = location.hash.replace("#", "");
