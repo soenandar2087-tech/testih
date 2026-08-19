@@ -7,7 +7,7 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #f5f6fa;
             color: #2d3436;
             max-width: 920px;
@@ -19,31 +19,31 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 10px;
+            margin-bottom: 20px;
             flex-wrap: wrap;
-            margin-bottom: 16px;
+            gap: 10px;
         }
         h1 { font-size: 20px; color: #2c3e50; }
         .badge {
             font-size: 11px;
             padding: 4px 12px;
             border-radius: 20px;
-            font-weight: 700;
+            font-weight: 600;
+            letter-spacing: 0.3px;
         }
-        .ok { background: #d4efdf; color: #196f3d; }
-        .wait { background: #fef9e7; color: #b7950b; }
-        .err { background: #fdedec; color: #c0392b; }
-        .nav, .error-box {
-            background: #fff;
-            border: 1px solid #e8e8e8;
-            border-radius: 10px;
-            margin-bottom: 16px;
-        }
+        .badge-online { background: #d4efdf; color: #27ae60; }
+        .badge-saving { background: #fef9e7; color: #f39c12; }
+        .badge-error { background: #fdedec; color: #e74c3c; }
         .nav {
             display: flex;
             align-items: center;
             gap: 8px;
+            margin-bottom: 16px;
             padding: 10px 14px;
+            background: #fff;
+            border-radius: 10px;
+            border: 1px solid #e8e8e8;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
         }
         .nav button {
             background: none;
@@ -53,29 +53,37 @@
             font-size: 14px;
             padding: 5px 10px;
             border-radius: 6px;
-            font-weight: 600;
+            font-weight: 500;
         }
-        .nav button:hover { background: #f0f0f0; }
-        .path {
+        .nav button:hover { background: #f0f0f0; color: #2c3e50; }
+        .nav .path {
             flex: 1;
             font-size: 14px;
             color: #555;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            font-weight: 600;
+            font-weight: 500;
         }
-        .toolbar { display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
         .btn {
-            padding: 9px 16px;
+            padding: 9px 18px;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             font-size: 13px;
-            font-weight: 700;
+            font-weight: 600;
+            transition: all 0.15s;
         }
         .btn-primary { background: #2c3e50; color: #fff; }
+        .btn-primary:hover { background: #34495e; transform: translateY(-1px); }
         .btn-secondary { background: #fff; color: #2c3e50; border: 1px solid #ddd; }
+        .btn-secondary:hover { background: #f8f9fa; border-color: #bbb; }
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -85,89 +93,150 @@
             background: #fff;
             border: 1px solid #e8e8e8;
             border-radius: 12px;
-            padding: 18px 12px 12px;
+            padding: 20px 12px 14px;
             text-align: center;
+            position: relative;
+            transition: all 0.15s;
             min-height: 150px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
-        .card:hover { box-shadow: 0 6px 20px rgba(0,0,0,.07); }
-        .icon { font-size: 42px; cursor: pointer; margin-bottom: 8px; }
-        .name {
-            font-weight: 700;
+        .card:hover {
+            border-color: #bdc3c7;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.07);
+            transform: translateY(-2px);
+        }
+        .card .icon {
+            font-size: 44px;
+            line-height: 1;
+            margin-bottom: 10px;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.15s;
+        }
+        .card:hover .icon { transform: scale(1.1); }
+        .card .name {
+            font-weight: 600;
             font-size: 13px;
             color: #2c3e50;
             cursor: pointer;
             word-break: break-word;
+            line-height: 1.35;
+            max-width: 100%;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
-        .meta { font-size: 11px; color: #999; margin-top: 4px; }
-        .card-actions { display: flex; gap: 4px; margin-top: auto; padding-top: 10px; }
+        .card .name:hover { color: #3498db; }
+        .card .meta {
+            font-size: 11px;
+            color: #999;
+            margin-top: 5px;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .card .card-actions {
+            display: flex;
+            gap: 4px;
+            justify-content: center;
+            margin-top: auto;
+            padding-top: 10px;
+            opacity: 0;
+            transition: opacity 0.15s;
+            width: 100%;
+        }
+        .card:hover .card-actions { opacity: 1; }
         .btn-icon {
             background: #f4f4f4;
             border: none;
-            border-radius: 5px;
-            padding: 4px 8px;
             cursor: pointer;
+            padding: 4px 8px;
             font-size: 11px;
+            color: #666;
+            border-radius: 5px;
+            font-weight: 500;
         }
+        .btn-icon:hover { background: #e8e8e8; color: #333; }
+        .btn-icon.danger:hover { background: #fdecea; color: #e74c3c; }
         .empty {
             grid-column: 1 / -1;
             text-align: center;
-            padding: 50px 16px;
-            color: #999;
+            padding: 60px 20px;
+            color: #aaa;
+            font-size: 14px;
             background: #fff;
             border: 2px dashed #e0e0e0;
             border-radius: 12px;
         }
-        .error-box { display: none; padding: 14px 16px; color: #922b21; background: #fdedec; }
-        .error-box.show { display: block; }
-        .error-box code { display: block; margin-top: 8px; font-size: 12px; white-space: pre-wrap; }
+        .empty .empty-icon { font-size: 48px; margin-bottom: 12px; }
         #overlay {
             position: fixed;
             inset: 0;
-            background: rgba(255,255,255,.92);
+            background: rgba(255,255,255,0.92);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 9;
-            gap: 10px;
+            z-index: 9999;
+            gap: 12px;
+            transition: opacity 0.3s;
         }
-        #overlay.hidden { display: none; }
+        #overlay.hidden { opacity: 0; pointer-events: none; }
         .spinner {
-            width: 34px;
-            height: 34px;
-            border: 3px solid #ddd;
+            width: 36px;
+            height: 36px;
+            border: 3px solid #e0e0e0;
             border-top-color: #2c3e50;
             border-radius: 50%;
-            animation: spin .8s linear infinite;
+            animation: spin 0.8s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #2c3e50;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            z-index: 10000;
+            transform: translateY(80px);
+            opacity: 0;
+            transition: all 0.3s;
+            max-width: 90vw;
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.success { background: #27ae60; }
+        .toast.error { background: #e74c3c; }
         @media (max-width: 600px) {
-            .grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+            .grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+            .card .card-actions { opacity: 1; }
+            .card { min-height: 135px; padding: 14px 10px 12px; }
+            .card .icon { font-size: 36px; }
+            body { padding: 16px 10px; }
         }
     </style>
 </head>
 <body>
+
     <div id="overlay">
         <div class="spinner"></div>
-        <div>Menghubungkan ke cloud...</div>
+        <span style="font-size:14px;color:#555;font-weight:500;">Memuat data dari cloud...</span>
     </div>
 
     <div class="header">
         <h1>📁 Arsip Lembar Kerja</h1>
-        <span id="badge" class="badge wait">Menghubungkan</span>
+        <span id="statusBadge" class="badge badge-online">● Online</span>
     </div>
 
-    <div id="errorBox" class="error-box"></div>
-
     <div class="nav">
-        <button id="btnBack" onclick="goBack()" style="display:none">← Kembali</button>
+        <button onclick="goBack()" id="btnBack" style="display:none">← Kembali</button>
         <span class="path" id="pathText">Beranda</span>
     </div>
 
@@ -178,169 +247,134 @@
 
     <div class="grid" id="list"></div>
 
+    <div class="toast" id="toast"></div>
+
     <script>
-        const API_KEY = $2a$10$aQNI6oE29k28vMyVPxOP4u4OdqLpAV20MdzNKR4WdkGBuIgxem.sa;
-        const BIN_ID = 6a852125f5f4af5e2926f117;
+        // ============================================================
+        //  KONFIGURASI DATABASE
+        // ============================================================
+        const API_KEY = "$2a$10$aQNI6oE29k28vMyVPxOP4u4OdqLpAV20MdzNKR4WdkGBuIgxem.sa";
+        const BIN_ID  = "6a852125f5f4af5e2926f117";
         const API_URL = "https://api.jsonbin.io/v3/b/" + BIN_ID;
-        const LOCAL_KEY = "arsip_cloud_backup";
 
-        const defaultData = {
-            id: "root",
-            type: "folder",
-            name: "Beranda",
-            children: []
-        };
-
-        let data = defaultData;
-        let currentPath = [data];
-        let currentFolder = data;
+        // ============================================================
+        //  STATE
+        // ============================================================
+        let data = null;
+        let currentPath = [];
+        let currentFolder = null;
         let saveTimer = null;
 
+        // ============================================================
+        //  UTILS
+        // ============================================================
         function uid() {
             return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
         }
 
-        function esc(text) {
-            const el = document.createElement("div");
-            el.textContent = String(text == null ? "" : text);
-            return el.innerHTML;
+        function esc(t) {
+            const d = document.createElement("div");
+            d.textContent = String(t);
+            return d.innerHTML;
+        }
+
+        function escA(t) {
+            return String(t)
+                .replace(/&/g, "&amp;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#39;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
         }
 
         function hostOf(url) {
             try { return new URL(url).hostname.replace(/^www\./, ""); }
-            catch (e) { return "link"; }
+            catch { return "link"; }
         }
 
-        function normalizeUrl(value) {
-            let url = String(value || "").trim();
-            if (!url) return null;
-            if (!/^https?:\/\//i.test(url)) url = "https://" + url;
+        function normalizeUrl(u) {
+            u = String(u || "").trim();
+            if (!u) return null;
+            if (!/^https?:\/\//i.test(u)) u = "https://" + u;
             try {
-                const parsed = new URL(url);
-                if (parsed.protocol !== "http:" && parsed.protocol !== "https:") return null;
-                return parsed.href;
-            } catch (e) {
-                return null;
-            }
+                const p = new URL(u);
+                if (p.protocol !== "http:" && p.protocol !== "https:") return null;
+                return p.href;
+            } catch { return null; }
+        }
+
+        function showToast(msg, type = "success") {
+            const el = document.getElementById("toast");
+            el.textContent = msg;
+            el.className = "toast show " + type;
+            setTimeout(() => el.classList.remove("show"), 3500);
         }
 
         function setBadge(text, cls) {
-            const el = document.getElementById("badge");
-            el.textContent = text;
-            el.className = "badge " + cls;
+            const b = document.getElementById("statusBadge");
+            b.textContent = text;
+            b.className = "badge " + cls;
         }
 
-        function showError(title, detail) {
-            const box = document.getElementById("errorBox");
-            box.className = "error-box show";
-            box.innerHTML = "<strong>" + esc(title) + "</strong><code>" + esc(detail) + "</code>";
-        }
-
-        function hideError() {
-            const box = document.getElementById("errorBox");
-            box.className = "error-box";
-            box.innerHTML = "";
-        }
-
-        function normalizeTree(item) {
-            if (!item || typeof item !== "object") return null;
-            const node = {
-                id: item.id || uid(),
-                name: String(item.name || "Tanpa Nama"),
-                type: item.type === "link" ? "link" : "folder"
-            };
-            if (node.type === "folder") {
-                node.children = Array.isArray(item.children)
-                    ? item.children.map(normalizeTree).filter(Boolean)
-                    : [];
-            } else {
-                node.url = String(item.url || "https://");
-            }
-            return node;
-        }
-
-        function saveLocal() {
-            try { localStorage.setItem(LOCAL_KEY, JSON.stringify(data)); }
-            catch (e) {}
-        }
-
-        function loadLocal() {
-            try {
-                const raw = localStorage.getItem(LOCAL_KEY);
-                return raw ? normalizeTree(JSON.parse(raw)) : null;
-            } catch (e) {
-                return null;
-            }
-        }
-
-        async function readError(res) {
-            const text = await res.text();
-            try {
-                const json = JSON.parse(text);
-                return json.message || json.Message || JSON.stringify(json);
-            } catch (e) {
-                return text || ("HTTP " + res.status);
-            }
-        }
-
-        async function cloudGet() {
-            const res = await fetch(API_URL + "/latest", {
-                method: "GET",
-                headers: {
-                    "X-Master-Key": API_KEY,
-                    "X-Access-Key": API_KEY,
-                    "X-Bin-Meta": "false"
+        // ============================================================
+        //  CLOUD LOAD / SAVE
+        // ============================================================
+        async function loadFromCloud() {
+            const res = await fetch(API_URL, {
+                headers: { 
+                    "X-Master-Key": API_KEY 
                 }
             });
-            if (!res.ok) throw new Error(await readError(res));
+            if (!res.ok) {
+                const err = await res.json().catch(() => null);
+                throw new Error(err?.message || "HTTP " + res.status);
+            }
             const json = await res.json();
-            return normalizeTree(json.record || json);
+            return json.record;
         }
 
-        async function cloudSave() {
-            const res = await fetch(API_URL, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-Master-Key": API_KEY,
-                    "X-Access-Key": API_KEY
-                },
-                body: JSON.stringify(data)
-            });
-            if (!res.ok) throw new Error(await readError(res));
+        async function saveToCloud() {
+            try {
+                setBadge("⏳ Menyimpan...", "badge-saving");
+                const res = await fetch(API_URL, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-Master-Key": API_KEY,
+                        "X-Bin-Versioning": "false" // Mencegah error limit version di JSONBin
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (!res.ok) {
+                    const err = await res.json().catch(() => null);
+                    throw new Error(err?.message || "HTTP " + res.status);
+                }
+                
+                setBadge("● Online", "badge-online");
+                showToast("Tersimpan di cloud ✓");
+            } catch (e) {
+                console.error("Save error:", e);
+                setBadge("✕ Error", "badge-error");
+                showToast("Gagal menyimpan: " + e.message, "error");
+            }
         }
 
         function scheduleSave() {
-            saveLocal();
             clearTimeout(saveTimer);
-            saveTimer = setTimeout(async function () {
-                try {
-                    setBadge("Menyimpan...", "wait");
-                    await cloudSave();
-                    hideError();
-                    setBadge("Tersimpan online", "ok");
-                } catch (e) {
-                    setBadge("Gagal menyimpan", "err");
-                    showError(
-                        "Gagal menyimpan ke JSONBin.",
-                        String(e.message || e) +
-                        "\n\nCek 3 hal ini:" +
-                        "\n1. BIN ID dan API Key harus dari akun JSONBin yang sama." +
-                        "\n2. API Key harus Master Key, bukan Access Key read-only." +
-                        "\n3. Isi awal Bin harus JSON valid."
-                    );
-                }
-            }, 400);
+            saveTimer = setTimeout(saveToCloud, 600);
         }
 
-        function findPathById(folder, id, path) {
-            const next = (path || []).concat(folder);
-            if (folder.id === id) return next;
-            const children = folder.children || [];
-            for (let i = 0; i < children.length; i++) {
-                if (children[i].type === "folder") {
-                    const found = findPathById(children[i], id, next);
-                    if (found) return found;
+        // ============================================================
+        //  TREE HELPERS
+        // ============================================================
+        function findPathById(folder, id, path = []) {
+            const p = [...path, folder];
+            if (folder.id === id) return p;
+            for (const c of folder.children || []) {
+                if (c.type === "folder") {
+                    const r = findPathById(c, id, p);
+                    if (r) return r;
                 }
             }
             return null;
@@ -349,37 +383,38 @@
         function isDescendant(parent, child) {
             if (parent === child) return true;
             if (parent.type !== "folder") return false;
-            return (parent.children || []).some(function (item) {
-                return item.type === "folder" && isDescendant(item, child);
-            });
+            return (parent.children || []).some(
+                c => c.type === "folder" && isDescendant(c, child)
+            );
         }
 
-        function setCurrentFolder(path, updateUrl) {
+        // ============================================================
+        //  NAVIGATION
+        // ============================================================
+        function setCurrentFolder(path, updateUrl = true) {
             currentPath = path;
             currentFolder = path[path.length - 1];
-            if (updateUrl !== false) history.replaceState(null, "", "#" + currentFolder.id);
+            if (updateUrl) history.replaceState(null, "", "#" + currentFolder.id);
             render();
         }
 
         function openFolder(index) {
-            const folder = currentFolder.children[index];
-            if (folder && folder.type === "folder") {
-                setCurrentFolder(currentPath.concat(folder));
-            }
+            const f = currentFolder.children[index];
+            if (f && f.type === "folder") setCurrentFolder([...currentPath, f]);
         }
 
         function goBack() {
             if (currentPath.length > 1) setCurrentFolder(currentPath.slice(0, -1));
         }
 
+        // ============================================================
+        //  CRUD
+        // ============================================================
         function newFolder() {
             const name = prompt("Nama folder baru:");
             if (!name || !name.trim()) return;
             currentFolder.children.push({
-                id: uid(),
-                type: "folder",
-                name: name.trim(),
-                children: []
+                id: uid(), type: "folder", name: name.trim(), children: []
             });
             render();
             scheduleSave();
@@ -388,16 +423,12 @@
         function newLink() {
             const name = prompt("Nama lembar kerja:");
             if (!name || !name.trim()) return;
-            const url = normalizeUrl(prompt("Alamat URL:", "https://"));
-            if (!url) {
-                alert("URL tidak valid.");
-                return;
-            }
+            const raw = prompt("Alamat URL:", "https://");
+            if (!raw || !raw.trim()) return;
+            const url = normalizeUrl(raw);
+            if (!url) { alert("URL tidak valid."); return; }
             currentFolder.children.push({
-                id: uid(),
-                type: "link",
-                name: name.trim(),
-                url: url
+                id: uid(), type: "link", name: name.trim(), url
             });
             render();
             scheduleSave();
@@ -405,23 +436,23 @@
 
         function editFolder(index) {
             const item = currentFolder.children[index];
-            const name = prompt("Nama folder:", item.name);
-            if (!name || !name.trim()) return;
-            item.name = name.trim();
-            render();
-            scheduleSave();
+            const n = prompt("Nama folder:", item.name);
+            if (n && n.trim()) {
+                item.name = n.trim();
+                render();
+                scheduleSave();
+            }
         }
 
         function editLink(index) {
             const item = currentFolder.children[index];
-            const name = prompt("Nama lembar kerja:", item.name);
-            if (!name || !name.trim()) return;
-            const url = normalizeUrl(prompt("Alamat URL:", item.url));
-            if (!url) {
-                alert("URL tidak valid.");
-                return;
-            }
-            item.name = name.trim();
+            const n = prompt("Nama lembar kerja:", item.name);
+            if (!n || !n.trim()) return;
+            const raw = prompt("Alamat URL:", item.url);
+            if (!raw || !raw.trim()) return;
+            const url = normalizeUrl(raw);
+            if (!url) { alert("URL tidak valid."); return; }
+            item.name = n.trim();
             item.url = url;
             render();
             scheduleSave();
@@ -441,108 +472,112 @@
 
             (function scan(folder, path, depth) {
                 if (item.type === "folder" && isDescendant(item, folder)) return;
-                if (folder !== currentFolder) targets.push({ folder: folder, path: path, depth: depth });
-                (folder.children || []).forEach(function (child) {
-                    if (child.type === "folder") scan(child, path + " / " + child.name, depth + 1);
-                });
+                if (folder !== currentFolder) targets.push({ folder, path, depth });
+                (folder.children || [])
+                    .filter(c => c.type === "folder")
+                    .forEach(c => scan(c, path + " / " + c.name, depth + 1));
             })(data, data.name, 0);
 
-            if (!targets.length) {
-                alert("Tidak ada folder tujuan.");
-                return;
-            }
+            if (!targets.length) { alert("Tidak ada folder tujuan."); return; }
 
-            const choice = prompt(
-                'Pindahkan "' + item.name + '" ke:\n\n' +
-                targets.map(function (t, i) {
-                    return (i + 1) + ". " + t.path;
-                }).join("\n") +
-                "\n\nMasukkan nomor:"
-            );
-            const selected = parseInt(choice, 10) - 1;
-            if (isNaN(selected) || selected < 0 || selected >= targets.length) return;
+            const opts = targets
+                .map((t, i) => (i + 1) + ". " + "  ".repeat(t.depth) + t.path)
+                .join("\n");
+            const ch = prompt('Pindahkan "' + item.name + '" ke:\n\n' + opts + "\n\nMasukkan nomor:");
+            if (!ch) return;
+            const idx = parseInt(ch, 10) - 1;
+            if (idx < 0 || idx >= targets.length) { alert("Nomor tidak valid."); return; }
 
             currentFolder.children.splice(index, 1);
-            targets[selected].folder.children.push(item);
+            targets[idx].folder.children.push(item);
             render();
             scheduleSave();
         }
 
+        // ============================================================
+        //  RENDER
+        // ============================================================
         function render() {
-            document.getElementById("pathText").textContent = currentPath.map(function (f) { return f.name; }).join(" / ");
-            document.getElementById("btnBack").style.display = currentPath.length > 1 ? "block" : "none";
-
             const list = document.getElementById("list");
-            const children = currentFolder.children || [];
-            if (!children.length) {
-                list.innerHTML = '<div class="empty">Folder kosong. Tambah folder atau lembar kerja.</div>';
+            document.getElementById("pathText").textContent =
+                currentPath.map(f => f.name).join(" / ");
+            document.getElementById("btnBack").style.display =
+                currentPath.length > 1 ? "block" : "none";
+
+            const kids = currentFolder.children || [];
+            if (!kids.length) {
+                list.innerHTML =
+                    '<div class="empty"><div class="empty-icon">📂</div>Folder kosong.<br>Klik tombol di atas untuk menambah.</div>';
                 return;
             }
 
-            const items = children.map(function (item, i) {
-                return { item: item, i: i };
-            }).sort(function (a, b) {
-                if (a.item.type === b.item.type) return 0;
-                return a.item.type === "folder" ? -1 : 1;
-            });
+            const sorted = kids
+                .map((item, i) => ({ item, i }))
+                .sort((a, b) =>
+                    a.item.type === b.item.type ? 0 : a.item.type === "folder" ? -1 : 1
+                );
 
-            list.innerHTML = items.map(function (row) {
-                const item = row.item;
-                const i = row.i;
+            list.innerHTML = sorted.map(({ item, i }) => {
+                const nm = esc(item.name);
                 if (item.type === "folder") {
+                    const cnt = (item.children || []).length;
                     return '<div class="card">' +
                         '<div class="icon" onclick="openFolder(' + i + ')">📁</div>' +
-                        '<div class="name" onclick="openFolder(' + i + ')">' + esc(item.name) + '</div>' +
-                        '<div class="meta">' + (item.children || []).length + ' item</div>' +
+                        '<div class="name" onclick="openFolder(' + i + ')" title="' + escA(item.name) + '">' + nm + '</div>' +
+                        '<div class="meta">' + cnt + " item</div>" +
                         '<div class="card-actions">' +
-                        '<button class="btn-icon" onclick="editFolder(' + i + ')">Edit</button>' +
-                        '<button class="btn-icon" onclick="moveItem(' + i + ')">Pindah</button>' +
-                        '<button class="btn-icon" onclick="deleteItem(' + i + ')">Hapus</button>' +
+                        '<button class="btn-icon" onclick="editFolder(' + i + ')">✏️</button>' +
+                        '<button class="btn-icon" onclick="moveItem(' + i + ')">📦</button>' +
+                        '<button class="btn-icon danger" onclick="deleteItem(' + i + ')">🗑️</button>' +
                         '</div></div>';
                 }
+                const url = escA(item.url);
                 return '<div class="card">' +
-                    '<div class="icon" onclick="window.open(' + JSON.stringify(item.url) + ', \'_blank\', \'noopener\')">📄</div>' +
-                    '<div class="name" onclick="window.open(' + JSON.stringify(item.url) + ', \'_blank\', \'noopener\')">' + esc(item.name) + '</div>' +
+                    '<div class="icon" onclick="window.open(\'' + url + '\',\'_blank\',\'noopener\')">📄</div>' +
+                    '<div class="name" onclick="window.open(\'' + url + '\',\'_blank\',\'noopener\')" title="' + escA(item.name) + '">' + nm + '</div>' +
                     '<div class="meta">' + esc(hostOf(item.url)) + '</div>' +
                     '<div class="card-actions">' +
-                    '<button class="btn-icon" onclick="editLink(' + i + ')">Edit</button>' +
-                    '<button class="btn-icon" onclick="moveItem(' + i + ')">Pindah</button>' +
-                    '<button class="btn-icon" onclick="deleteItem(' + i + ')">Hapus</button>' +
+                    '<button class="btn-icon" onclick="editLink(' + i + ')">✏️</button>' +
+                    '<button class="btn-icon" onclick="moveItem(' + i + ')">📦</button>' +
+                    '<button class="btn-icon danger" onclick="deleteItem(' + i + ')">🗑️</button>' +
                     '</div></div>';
             }).join("");
         }
 
+        // ============================================================
+        //  INIT
+        // ============================================================
         async function init() {
             try {
-                data = await cloudGet() || defaultData;
-                hideError();
-                setBadge("Online", "ok");
-                saveLocal();
+                data = await loadFromCloud();
+                if (!data || !data.id) {
+                    data = { id: "root", type: "folder", name: "Beranda", children: [] };
+                    saveToCloud(); // Simpan struktur awal jika kosong
+                }
             } catch (e) {
-                const local = loadLocal();
-                data = local || defaultData;
-                setBadge("Mode cadangan", "err");
-                showError(
-                    "Tidak bisa terhubung ke JSONBin. Data sementara memakai cadangan browser.",
-                    String(e.message || e) +
-                    "\nBIN ID: " + BIN_ID +
-                    "\n\nYang paling sering salah:" +
-                    "\n- API Key bukan Master Key dari akun yang sama dengan Bin ini" +
-                    "\n- Bin masih kosong / bukan JSON" +
-                    "\n- Key sudah dihapus atau diganti di JSONBin"
-                );
+                console.error(e);
+                document.getElementById("overlay").innerHTML =
+                    '<div style="text-align:center;max-width:320px;padding:20px;">' +
+                    '<div style="font-size:40px;margin-bottom:12px;">⚠️</div>' +
+                    '<strong>Gagal memuat data</strong><br><br>' +
+                    '<span style="font-size:13px;color:#888;">' + esc(e.message) + '</span><br><br>' +
+                    '<button class="btn btn-primary" onclick="location.reload()">Coba Lagi</button>' +
+                    '</div>';
+                return;
             }
 
             const hashId = location.hash.replace("#", "");
             const path = hashId ? findPathById(data, hashId) : null;
             setCurrentFolder(path || [data], !path);
-            document.getElementById("overlay").className = "hidden";
+
+            document.getElementById("overlay").classList.add("hidden");
         }
 
-        window.addEventListener("hashchange", function () {
+        window.addEventListener("hashchange", () => {
             const id = location.hash.replace("#", "");
-            const path = id ? findPathById(data, id) : [data];
-            if (path) setCurrentFolder(path, false);
+            if (!id) return setCurrentFolder([data], false);
+            const p = findPathById(data, id);
+            if (p) setCurrentFolder(p, false);
         });
 
         init();
