@@ -1,438 +1,74 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arsip Lembar Kerja</title>
-    <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f5f6fa;color:#2d3436;max-width:920px;margin:0 auto;padding:24px 16px;line-height:1.5}
-        .header{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px}
-        h1{font-size:20px;color:#2c3e50}
-        .badge{font-size:11px;padding:4px 12px;border-radius:20px;font-weight:700;transition:all .3s}
-        .b-ok{background:#d4efdf;color:#196f3d}
-        .b-wait{background:#fef9e7;color:#b7950b}
-        .b-err{background:#fdedec;color:#c0392b}
-        .nav{display:flex;align-items:center;gap:8px;padding:10px 14px;background:#fff;border-radius:10px;border:1px solid #e8e8e8;margin-bottom:16px}
-        .nav button{background:none;border:none;color:#666;cursor:pointer;font-size:14px;padding:5px 10px;border-radius:6px;font-weight:600}
-        .nav button:hover{background:#f0f0f0}
-        .path{flex:1;font-size:14px;color:#555;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
-        .toolbar{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap}
-        .btn{padding:9px 16px;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;transition:all .15s}
-        .btn-p{background:#2c3e50;color:#fff}
-        .btn-p:hover{background:#34495e;transform:translateY(-1px)}
-        .btn-s{background:#fff;color:#2c3e50;border:1px solid #ddd}
-        .btn-s:hover{background:#f8f9fa;border-color:#bbb}
-        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
-        .card{background:#fff;border:1px solid #e8e8e8;border-radius:12px;padding:18px 12px 12px;text-align:center;min-height:150px;display:flex;flex-direction:column;align-items:center;transition:all .15s}
-        .card:hover{box-shadow:0 6px 20px rgba(0,0,0,.07);transform:translateY(-2px)}
-        .icon{font-size:42px;cursor:pointer;margin-bottom:8px;transition:transform .15s}
-        .card:hover .icon{transform:scale(1.1)}
-        .name{font-weight:700;font-size:13px;color:#2c3e50;cursor:pointer;word-break:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-        .name:hover{color:#3498db}
-        .meta{font-size:11px;color:#999;margin-top:4px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-        .ca{display:flex;gap:4px;margin-top:auto;padding-top:10px;opacity:0;transition:opacity .15s;width:100%;justify-content:center}
-        .card:hover .ca{opacity:1}
-        .bi{background:#f4f4f4;border:none;border-radius:5px;padding:4px 8px;cursor:pointer;font-size:11px;color:#666;font-weight:500}
-        .bi:hover{background:#e8e8e8;color:#333}
-        .bi.dg:hover{background:#fdecea;color:#e74c3c}
-        .empty{grid-column:1/-1;text-align:center;padding:50px 16px;color:#aaa;background:#fff;border:2px dashed #e0e0e0;border-radius:12px;font-size:14px}
-        .empty .ei{font-size:48px;margin-bottom:10px}
-        .errbox{display:none;padding:14px 16px;border-radius:10px;margin-bottom:16px;font-size:13px;line-height:1.6}
-        .errbox.show{display:block}
-        .errbox code{display:block;margin-top:8px;font-size:12px;white-space:pre-wrap;background:rgba(0,0,0,.05);padding:8px;border-radius:6px}
-        #ov{position:fixed;inset:0;background:rgba(255,255,255,.93);display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:9;gap:12px;transition:opacity .3s}
-        #ov.hide{opacity:0;pointer-events:none}
-        .sp{width:34px;height:34px;border:3px solid #ddd;border-top-color:#2c3e50;border-radius:50%;animation:sp .8s linear infinite}
-        @keyframes sp{to{transform:rotate(360deg)}}
-        .toast{position:fixed;bottom:20px;right:20px;padding:12px 20px;border-radius:8px;font-size:13px;font-weight:600;z-index:10;transform:translateY(80px);opacity:0;transition:all .3s;color:#fff}
-        .toast.show{transform:translateY(0);opacity:1}
-        .toast.ok{background:#27ae60}
-        .toast.er{background:#e74c3c}
-        @media(max-width:600px){.grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}.card{min-height:135px;padding:14px 10px 12px}.icon{font-size:36px}.ca{opacity:1}body{padding:16px 10px}}
-    </style>
+<meta charset="UTF-8">
+<title>Test JSONBin</title>
+<style>
+    body { font-family: monospace; padding: 20px; max-width: 700px; margin: auto; }
+    input, button { padding: 8px; font-size: 14px; margin: 4px 0; width: 100%; }
+    button { background: #2c3e50; color: #fff; border: none; cursor: pointer; }
+    pre { background: #f4f4f4; padding: 12px; border-radius: 6px; white-space: pre-wrap; word-break: break-all; }
+    .ok { color: green; }
+    .err { color: red; }
+</style>
 </head>
 <body>
+    <h2>Test Koneksi JSONBin</h2>
 
-<div id="ov">
-    <div class="sp"></div>
-    <div style="font-size:14px;color:#555;font-weight:600">Menghubungkan ke cloud...</div>
-</div>
+    <label>Bin ID:</label>
+    <input id="binId" value="6a852125f5f4af5e2926f117">
 
-<div class="header">
-    <h1>📁 Arsip Lembar Kerja</h1>
-    <span id="bd" class="badge b-wait">⏳ Menghubungkan</span>
-</div>
+    <label>Master Key:</label>
+    <input id="masterKey" placeholder="Paste Master Key di sini">
 
-<div id="eb" class="errbox"></div>
+    <button onclick="testRead()">1. Test BACA (GET)</button>
+    <button onclick="testWrite()">2. Test TULIS (PUT)</button>
 
-<div class="nav">
-    <button id="bb" onclick="goBack()" style="display:none">← Kembali</button>
-    <span class="path" id="pt">Beranda</span>
-</div>
-
-<div class="toolbar">
-    <button class="btn btn-s" onclick="newFolder()">📂 + Folder</button>
-    <button class="btn btn-p" onclick="newLink()">📄 + Lembar Kerja</button>
-</div>
-
-<div class="grid" id="list"></div>
-<div class="toast" id="toast"></div>
+    <pre id="result">Hasil akan muncul di sini...</pre>
 
 <script>
-/* ================================================================
-   KONFIGURASI — SUDAH TERISI, TIDAK PERLU DIUBAH
-   ================================================================ */
-var MASTER_KEY = "$2a$10$hBlkqGqFg9yKHLtN.NnRqu4rqJFsqkUMePVaZ274b8fuezYZOzsFO";
-var BIN_ID     = "6a852125f5f4af5e2926f117";
-var API_URL    = "https://api.jsonbin.io/v3/b/" + BIN_ID;
-var LKEY       = "arsip_cloud_v3";
+async function testRead() {
+    const binId = document.getElementById('binId').value.trim();
+    const key = document.getElementById('masterKey').value.trim();
+    const result = document.getElementById('result');
+    result.textContent = 'Menguji GET...';
 
-/* ================================================================
-   STATE
-   ================================================================ */
-var data = { id:"root", type:"folder", name:"Beranda", children:[] };
-var cPath = [data];
-var cFolder = data;
-var sTimer = null;
-
-/* ================================================================
-   UTIL
-   ================================================================ */
-function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,8); }
-
-function esc(t){
-    var d=document.createElement("div");
-    d.textContent=String(t==null?"":t);
-    return d.innerHTML;
-}
-
-function hostOf(u){
-    try{ return new URL(u).hostname.replace(/^www\./,""); }
-    catch(e){ return "link"; }
-}
-
-function normUrl(v){
-    var u=String(v||"").trim();
-    if(!u) return null;
-    if(!/^https?:\/\//i.test(u)) u="https://"+u;
-    try{
-        var p=new URL(u);
-        if(p.protocol!=="http:"&&p.protocol!=="https:") return null;
-        return p.href;
-    }catch(e){ return null; }
-}
-
-function badge(txt,cls){
-    var e=document.getElementById("bd");
-    e.textContent=txt;
-    e.className="badge "+cls;
-}
-
-function toast(msg,ok){
-    var e=document.getElementById("toast");
-    e.textContent=msg;
-    e.className="toast show "+(ok?"ok":"er");
-    setTimeout(function(){ e.className="toast"; },2500);
-}
-
-function showErr(title,detail){
-    var e=document.getElementById("eb");
-    e.className="errbox show";
-    e.innerHTML="<strong style='color:#c0392b'>"+esc(title)+"</strong><code>"+esc(detail)+"</code>";
-}
-
-function hideErr(){
-    var e=document.getElementById("eb");
-    e.className="errbox";
-    e.innerHTML="";
-}
-
-/* ================================================================
-   NORMALIZE TREE
-   ================================================================ */
-function normTree(item){
-    if(!item||typeof item!=="object") return null;
-    var n={
-        id: item.id||uid(),
-        name: String(item.name||"Tanpa Nama"),
-        type: item.type==="link"?"link":"folder"
-    };
-    if(n.type==="folder"){
-        n.children=Array.isArray(item.children)?item.children.map(normTree).filter(Boolean):[];
-    }else{
-        n.url=String(item.url||"https://");
-    }
-    return n;
-}
-
-/* ================================================================
-   LOCAL BACKUP
-   ================================================================ */
-function saveLocal(){
-    try{ localStorage.setItem(LKEY,JSON.stringify(data)); }catch(e){}
-}
-
-function loadLocal(){
-    try{
-        var r=localStorage.getItem(LKEY);
-        return r?normTree(JSON.parse(r)):null;
-    }catch(e){ return null; }
-}
-
-/* ================================================================
-   CLOUD API
-   ================================================================ */
-function cloudHeaders(){
-    return { "X-Master-Key": MASTER_KEY };
-}
-
-async function cloudGet(){
-    var res=await fetch(API_URL+"/latest",{
-        method:"GET",
-        headers: cloudHeaders()
-    });
-    if(!res.ok){
-        var t=await res.text();
-        throw new Error("GET gagal (HTTP "+res.status+"): "+t.substring(0,300));
-    }
-    var json=await res.json();
-    return normTree(json.record||json);
-}
-
-async function cloudSave(){
-    var res=await fetch(API_URL,{
-        method:"PUT",
-        headers: Object.assign({"Content-Type":"application/json"}, cloudHeaders()),
-        body: JSON.stringify(data)
-    });
-    if(!res.ok){
-        var t=await res.text();
-        throw new Error("PUT gagal (HTTP "+res.status+"): "+t.substring(0,300));
-    }
-}
-
-/* ================================================================
-   SAVE SCHEDULED
-   ================================================================ */
-function doSave(){
-    saveLocal();
-    clearTimeout(sTimer);
-    sTimer=setTimeout(async function(){
-        try{
-            badge("⏳ Menyimpan...","b-wait");
-            await cloudSave();
-            hideErr();
-            badge("● Online","b-ok");
-            toast("Tersimpan di cloud ✓",true);
-        }catch(e){
-            badge("✕ Gagal","b-err");
-            showErr("Gagal menyimpan ke JSONBin",
-                String(e.message||e)+
-                "\n\nSolusi:" +
-                "\n1. Pastikan Master Key masih aktif di JSONBin" +
-                "\n2. Pastikan Bin ID benar: "+BIN_ID +
-                "\n3. Coba buka https://jsonbin.io lalu cek apakah Bin masih ada"
-            );
-            toast("Gagal menyimpan!",false);
-        }
-    },500);
-}
-
-/* ================================================================
-   TREE NAV
-   ================================================================ */
-function findPath(folder,id,path){
-    var p=(path||[]).concat(folder);
-    if(folder.id===id) return p;
-    var ch=folder.children||[];
-    for(var i=0;i<ch.length;i++){
-        if(ch[i].type==="folder"){
-            var r=findPath(ch[i],id,p);
-            if(r) return r;
-        }
-    }
-    return null;
-}
-
-function isDesc(parent,child){
-    if(parent===child) return true;
-    if(parent.type!=="folder") return false;
-    var ch=parent.children||[];
-    for(var i=0;i<ch.length;i++){
-        if(ch[i].type==="folder"&&isDesc(ch[i],child)) return true;
-    }
-    return false;
-}
-
-function setFolder(path,updUrl){
-    cPath=path;
-    cFolder=path[path.length-1];
-    if(updUrl!==false) history.replaceState(null,"","#"+cFolder.id);
-    render();
-}
-
-function openFolder(i){
-    var f=cFolder.children[i];
-    if(f&&f.type==="folder") setFolder(cPath.concat(f));
-}
-
-function goBack(){
-    if(cPath.length>1) setFolder(cPath.slice(0,-1));
-}
-
-/* ================================================================
-   CRUD
-   ================================================================ */
-function newFolder(){
-    var n=prompt("Nama folder baru:");
-    if(!n||!n.trim()) return;
-    cFolder.children.push({id:uid(),type:"folder",name:n.trim(),children:[]});
-    render(); doSave();
-}
-
-function newLink(){
-    var n=prompt("Nama lembar kerja:");
-    if(!n||!n.trim()) return;
-    var u=normUrl(prompt("Alamat URL:","https://"));
-    if(!u){ alert("URL tidak valid."); return; }
-    cFolder.children.push({id:uid(),type:"link",name:n.trim(),url:u});
-    render(); doSave();
-}
-
-function editFolder(i){
-    var it=cFolder.children[i];
-    var n=prompt("Nama folder:",it.name);
-    if(!n||!n.trim()) return;
-    it.name=n.trim();
-    render(); doSave();
-}
-
-function editLink(i){
-    var it=cFolder.children[i];
-    var n=prompt("Nama lembar kerja:",it.name);
-    if(!n||!n.trim()) return;
-    var u=normUrl(prompt("Alamat URL:",it.url));
-    if(!u){ alert("URL tidak valid."); return; }
-    it.name=n.trim(); it.url=u;
-    render(); doSave();
-}
-
-function delItem(i){
-    var it=cFolder.children[i];
-    if(!confirm('Hapus "'+it.name+'"?')) return;
-    cFolder.children.splice(i,1);
-    render(); doSave();
-}
-
-function moveItem(i){
-    var it=cFolder.children[i];
-    var targets=[];
-    (function scan(f,p,d){
-        if(it.type==="folder"&&isDesc(it,f)) return;
-        if(f!==cFolder) targets.push({f:f,p:p,d:d});
-        var ch=f.children||[];
-        for(var j=0;j<ch.length;j++){
-            if(ch[j].type==="folder") scan(ch[j],p+" / "+ch[j].name,d+1);
-        }
-    })(data,data.name,0);
-
-    if(!targets.length){ alert("Tidak ada folder tujuan."); return; }
-
-    var ch=prompt(
-        'Pindahkan "'+it.name+'" ke:\n\n'+
-        targets.map(function(t,i){ return (i+1)+". "+t.p; }).join("\n")+
-        "\n\nMasukkan nomor:"
-    );
-    var sel=parseInt(ch,10)-1;
-    if(isNaN(sel)||sel<0||sel>=targets.length) return;
-
-    cFolder.children.splice(i,1);
-    targets[sel].f.children.push(it);
-    render(); doSave();
-}
-
-/* ================================================================
-   RENDER
-   ================================================================ */
-function render(){
-    document.getElementById("pt").textContent=cPath.map(function(f){return f.name;}).join(" / ");
-    document.getElementById("bb").style.display=cPath.length>1?"block":"none";
-
-    var list=document.getElementById("list");
-    var ch=cFolder.children||[];
-    if(!ch.length){
-        list.innerHTML='<div class="empty"><div class="ei">📂</div>Folder kosong.<br>Tambah folder atau lembar kerja di atas.</div>';
-        return;
-    }
-
-    var items=ch.map(function(item,i){return{item:item,i:i};})
-        .sort(function(a,b){
-            if(a.item.type===b.item.type) return 0;
-            return a.item.type==="folder"?-1:1;
+    try {
+        const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
+            headers: { 'X-Master-Key': key }
         });
-
-    list.innerHTML=items.map(function(row){
-        var it=row.item, i=row.i;
-        if(it.type==="folder"){
-            var cnt=(it.children||[]).length;
-            return '<div class="card">'
-                +'<div class="icon" onclick="openFolder('+i+')">📁</div>'
-                +'<div class="name" onclick="openFolder('+i+')" title="'+esc(it.name)+'">'+esc(it.name)+'</div>'
-                +'<div class="meta">'+cnt+' item</div>'
-                +'<div class="ca">'
-                +'<button class="bi" onclick="editFolder('+i+')">✏️ Edit</button>'
-                +'<button class="bi" onclick="moveItem('+i+')">📦 Pindah</button>'
-                +'<button class="bi dg" onclick="delItem('+i+')">🗑️ Hapus</button>'
-                +'</div></div>';
-        }
-        var u=JSON.stringify(it.url);
-        return '<div class="card">'
-            +'<div class="icon" onclick="window.open('+u+',\'_blank\',\'noopener\')">📄</div>'
-            +'<div class="name" onclick="window.open('+u+',\'_blank\',\'noopener\')" title="'+esc(it.name)+'">'+esc(it.name)+'</div>'
-            +'<div class="meta">'+esc(hostOf(it.url))+'</div>'
-            +'<div class="ca">'
-            +'<button class="bi" onclick="editLink('+i+')">✏️ Edit</button>'
-            +'<button class="bi" onclick="moveItem('+i+')">📦 Pindah</button>'
-            +'<button class="bi dg" onclick="delItem('+i+')">🗑️ Hapus</button>'
-            +'</div></div>';
-    }).join("");
-}
-
-/* ================================================================
-   INIT
-   ================================================================ */
-async function init(){
-    try{
-        var d=await cloudGet();
-        data=d||data;
-        hideErr();
-        badge("● Online","b-ok");
-        saveLocal();
-    }catch(e){
-        var local=loadLocal();
-        data=local||data;
-        badge("⚠ Cadangan","b-err");
-        showErr("Tidak bisa terhubung ke JSONBin",
-            String(e.message||e)+
-            "\n\nData sementara memakai cadangan browser." +
-            "\nPeriksa Master Key dan Bin ID di JSONBin."
-        );
+        const text = await res.text();
+        result.innerHTML = `Status: ${res.status}\n\n${text}`;
+        result.className = res.ok ? 'ok' : 'err';
+    } catch (e) {
+        result.textContent = 'Error: ' + e.message;
+        result.className = 'err';
     }
-
-    var hid=location.hash.replace("#","");
-    var p=hid?findPath(data,hid):null;
-    setFolder(p||[data],!p);
-    document.getElementById("ov").className="hide";
 }
 
-window.addEventListener("hashchange",function(){
-    var id=location.hash.replace("#","");
-    var p=id?findPath(data,id):[data];
-    if(p) setFolder(p,false);
-});
+async function testWrite() {
+    const binId = document.getElementById('binId').value.trim();
+    const key = document.getElementById('masterKey').value.trim();
+    const result = document.getElementById('result');
+    result.textContent = 'Menguji PUT...';
 
-init();
+    try {
+        const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Master-Key': key
+            },
+            body: JSON.stringify({ id: 'root', type: 'folder', name: 'Test OK', children: [] })
+        });
+        const text = await res.text();
+        result.innerHTML = `Status: ${res.status}\n\n${text}`;
+        result.className = res.ok ? 'ok' : 'err';
+    } catch (e) {
+        result.textContent = 'Error: ' + e.message;
+        result.className = 'err';
+    }
+}
 </script>
 </body>
 </html>
